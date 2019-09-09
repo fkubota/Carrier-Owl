@@ -1,4 +1,4 @@
-{'word': 'sound',                  'score':1}
+:{'word': 'sound',                  'score':1}
 {'word': 'audio',                  'score':1}
 {'word': 'anomaly detection',      'score':3}
 {'word': 'anomaly',                'score':2}
@@ -6,3 +6,4 @@
 {'word': 'imbalanced',             'score':2}
 {'word': 'sound feature',          'score':3}
 {'word': 'audio feature',          'score':3}
+{'word': 'noise removal',          'score':2}
