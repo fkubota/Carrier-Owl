@@ -100,7 +100,7 @@ def send2slack(results):
     idxs_sort = idxs_sort[::-1]
     
     # 通知
-    star = '*'*160
+    star = '*'*100
     today = datetime.date.today()
     text = f'{star}\n \t \t {today}\n{star}'
     slack.notify(text=text)
