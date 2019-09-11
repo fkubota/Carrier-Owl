@@ -4,6 +4,8 @@
 {'word': 'anomaly',                'score':2}
 {'word': 'anomalies',              'score':2}
 {'word': 'imbalanced',             'score':2}
+{'word': 'imbalance',              'score':2}
 {'word': 'sound feature',          'score':3}
 {'word': 'audio feature',          'score':3}
 {'word': 'noise removal',          'score':2}
+{'word': 'phase',                  'score':1}
