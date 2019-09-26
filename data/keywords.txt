@@ -8,6 +8,5 @@
 {'word': 'sound feature',          'score':3}
 {'word': 'audio feature',          'score':3}
 {'word': 'noise removal',          'score':2}
-{'word': 'phase',                  'score':1}
 {'word': 'MFCC',                   'score':3}
 {'word': 'mfcc',                   'score':3}
