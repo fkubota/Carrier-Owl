@@ -33,7 +33,7 @@ def get_articles_info():
         idx = 2
     else:
         idx = 1
-    articles_html = html.split('2019</h3>')[idx]
+    articles_html = html.split('2019</h3>')[idx]   # <--------- 要注意
     
     # 論文それぞれのurlを取得
     bs = BeautifulSoup(articles_html)

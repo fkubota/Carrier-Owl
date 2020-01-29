@@ -12,3 +12,5 @@
 {'word': 'mfcc',                   'score':3}
 {'word': 'ivector',                'score':1}
 {'word': 'i-vector',               'score':1}
+{'word': 'spectrogram',            'score':3}
+{'word': 'outlier detection',      'score':1}
