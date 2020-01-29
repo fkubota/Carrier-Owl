@@ -12,7 +12,7 @@ import warnings
 # setting
 warnings.filterwarnings('ignore')
 weekday_dict = {0:'Mon', 1:'Tue', 2:'Wed', 3:'Thu', 4:'Fri', 5:'Sat', 6:'Sun'}
-slack = slackweb.Slack(url='https://hooks.slack.com/services/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')
+slack = slackweb.Slack(url='https://hooks.slack.com/services/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')
 keywords_path = '/home/fkubota/Git/arxiv_notification/data/keywords.txt'
 
 
@@ -33,7 +33,7 @@ def get_articles_info():
         idx = 2
     else:
         idx = 1
-    articles_html = html.split('2019</h3>')[idx]   # <--------- 要注意
+    articles_html = html.split('2020</h3>')[idx]   # <--------- 要注意
     
     # 論文それぞれのurlを取得
     bs = BeautifulSoup(articles_html)
@@ -84,8 +84,9 @@ def serch_keywords(id_list):
             abstracts.append(abstract_trans)
             words.append(hit_kwd_list)
             scores.append(sum_score)
-                
+               
     results = [urls, titles, abstracts, words, scores]
+
     return results
 
 def send2slack(results):
