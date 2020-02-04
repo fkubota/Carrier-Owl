@@ -11,8 +11,11 @@ import warnings
 
 # setting
 warnings.filterwarnings('ignore')
-weekday_dict = {0:'Mon', 1:'Tue', 2:'Wed', 3:'Thu', 4:'Fri', 5:'Sat', 6:'Sun'}
-slack = slackweb.Slack(url='https://hooks.slack.com/services/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')
+weekday_dict = {0: 'Mon', 1: 'Tue', 2: 'Wed', 3: 'Thu',
+                4: 'Fri', 5: 'Sat', 6: 'Sun'}
+with open('slack_id.txt') as f:
+    slack_id = f.read()
+slack = slackweb.Slack(url=slack_id)
 keywords_path = '/home/fkubota/Git/arxiv_notification/data/keywords.txt'
 
 
@@ -20,7 +23,7 @@ def get_articles_info():
     url = 'https://arxiv.org/list/cs/pastweek?show=100000'
     response = requests.get(url)
     html = response.text
-    
+
     # いつの論文データを取得するか
     bs = BeautifulSoup(html)
     h3 = bs.find_all('h3')
@@ -34,11 +37,12 @@ def get_articles_info():
     else:
         idx = 1
     articles_html = html.split('2020</h3>')[idx]   # <--------- 要注意
-    
+
     # 論文それぞれのurlを取得
     bs = BeautifulSoup(articles_html)
     id_list = bs.find_all(class_='list-identifier')
     return id_list
+
 
 def serch_keywords(id_list):
     urls = []
@@ -60,7 +64,7 @@ def serch_keywords(id_list):
 
         sum_score = 0
         hit_kwd_list = []
-        
+
         # serch
         f = open(keywords_path)
         keywords_list = f.readlines() # 1行毎にファイル終端まで全て読む(改行文字も含まれる)
@@ -84,7 +88,7 @@ def serch_keywords(id_list):
             abstracts.append(abstract_trans)
             words.append(hit_kwd_list)
             scores.append(sum_score)
-               
+
     results = [urls, titles, abstracts, words, scores]
 
     return results
@@ -95,11 +99,11 @@ def send2slack(results):
     abstracts = results[2]
     words = results[3]
     scores = results[4]
-    
+
     # rank
     idxs_sort = np.argsort(scores)
     idxs_sort = idxs_sort[::-1]
-    
+
     # 通知
     star = '*'*120
     today = datetime.date.today()
@@ -116,13 +120,14 @@ def send2slack(results):
                        \n<!here> \n score: `{score}`\n hit keywords: `{word}`\n url: {url}\n title:    {title}\n abstract: \n \t {abstract}\n{star}
                        '''
         slack.notify(text=text_slack)
-    
-    
+
+
 def main():
     id_list = get_articles_info()
     results = serch_keywords(id_list)
     send2slack(results)
-    
+
+
 if __name__ == "__main__":
     main()
 
