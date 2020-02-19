@@ -14,3 +14,4 @@
 {'word': 'i-vector',               'score':1}
 {'word': 'spectrogram',            'score':3}
 {'word': 'outlier detection',      'score':1}
+{'word': 'koizumi',                'score':3}
