@@ -13,7 +13,7 @@ import warnings
 warnings.filterwarnings('ignore')
 weekday_dict = {0: 'Mon', 1: 'Tue', 2: 'Wed', 3: 'Thu',
                 4: 'Fri', 5: 'Sat', 6: 'Sun'}
-with open('slack_id.txt') as f:
+with open('/home/fkubota/Git/arxiv_notification/src/slack_id.txt') as f:
     slack_id = f.read()
 slack = slackweb.Slack(url=slack_id)
 keywords_path = '/home/fkubota/Git/arxiv_notification/data/keywords.txt'
