@@ -117,7 +117,7 @@ def send2slack(results):
         score = scores[i]
 
         text_slack = f'''
-                       \n<!here> \n score: `{score}`\n hit keywords: `{word}`\n url: {url}\n title:    {title}\n abstract: \n \t {abstract}\n{star}
+                    \n score: `{score}`\n hit keywords: `{word}`\n url: {url}\n title:    {title}\n abstract: \n \t {abstract}\n{star}
                        '''
         slack.notify(text=text_slack)
 
