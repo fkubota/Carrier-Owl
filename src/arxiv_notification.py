@@ -46,10 +46,10 @@ def get_articles_info():
 
 def serch_keywords(id_list):
     urls = []
-    titles    = []
+    titles = []
     abstracts = []
-    words     = []
-    scores    = []
+    words = []
+    scores = []
     for id_ in progress_bar(id_list):
         a = id_.find('a')
         _url = a.get('href')
@@ -59,27 +59,30 @@ def serch_keywords(id_list):
         html = response.text
 
         bs = BeautifulSoup(html)
-        title    = bs.find('meta', attrs={'property': 'og:title'})['content']
-        abstract = bs.find('meta', attrs={'property': 'og:description'})['content']
+        title = bs.find('meta', attrs={'property': 'og:title'})['content']
+        abstract = bs.find(
+                'meta',
+                attrs={'property': 'og:description'})['content']
 
         sum_score = 0
         hit_kwd_list = []
 
         # serch
         f = open(keywords_path)
-        keywords_list = f.readlines() # 1行毎にファイル終端まで全て読む(改行文字も含まれる)
+        keywords_list = f.readlines()  # 1行毎にファイル終端まで全て読む(改行文字も含まれる)
         f.close()
         for line in keywords_list:
             keywords_dict = ast.literal_eval(line)
             word = keywords_dict['word']
             score = keywords_dict['score']
-            if word.lower() in abstract.lower(): # 全部小文字にすれば、大文字少文字区別しなくていい
+            if word.lower() in abstract.lower():  # 全部小文字にすれば、大文字少文字区別しなくていい
                 sum_score += score
                 hit_kwd_list.append(word)
         if sum_score != 0:
             translator = Translator()
             title_trans = translator.translate(title, dest='ja', src='en').text
-            abstract_trans = translator.translate(abstract.replace("\n",""), dest='ja', src='en').text
+            abstract_trans = translator.translate(
+                    abstract.replace("\n", ""), dest='ja', src='en').text
             abstract_trans = textwrap.wrap(abstract_trans, 40)  # 40行で改行
             abstract_trans = '\n'.join(abstract_trans)
 
@@ -92,6 +95,7 @@ def serch_keywords(id_list):
     results = [urls, titles, abstracts, words, scores]
 
     return results
+
 
 def send2slack(results):
     urls = results[0]
