@@ -23,6 +23,7 @@ def get_articles_info():
     url = 'https://arxiv.org/list/cs/pastweek?show=100000'
     response = requests.get(url)
     html = response.text
+    year = datetime.date.today().year
 
     # いつの論文データを取得するか
     bs = BeautifulSoup(html)
@@ -36,7 +37,7 @@ def get_articles_info():
         idx = 2
     else:
         idx = 1
-    articles_html = html.split('2020</h3>')[idx]   # <--------- 要注意
+    articles_html = html.split(f'{year}</h3>')[idx]   # <--------- 要注意
 
     # 論文それぞれのurlを取得
     bs = BeautifulSoup(articles_html)
@@ -45,6 +46,7 @@ def get_articles_info():
 
 
 def serch_keywords(id_list):
+    translator = Translator()
     urls = []
     titles = []
     abstracts = []
@@ -79,7 +81,6 @@ def serch_keywords(id_list):
                 sum_score += score
                 hit_kwd_list.append(word)
         if sum_score != 0:
-            translator = Translator()
             title_trans = translator.translate(title, dest='ja', src='en').text
             abstract_trans = translator.translate(
                     abstract.replace("\n", ""), dest='ja', src='en').text
