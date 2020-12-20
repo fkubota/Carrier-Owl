@@ -2,3 +2,4 @@ beautifulsoup4==4.9.0
 googletrans==4.0.0rc1
 slackweb==1.0.5
 requests==2.23.0
+lxml==4.6.2
