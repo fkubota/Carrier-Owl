@@ -150,7 +150,6 @@ def get_translated_text(from_lang, to_lang, from_text):
         to_text = get_text_from_page_source(html)
 
         try_count = i + 1
-
         if to_text:
             wait_time = sleep_time * try_count
             # アクセス修了
