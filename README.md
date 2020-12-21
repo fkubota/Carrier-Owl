@@ -1,6 +1,8 @@
  <img src='./data/images/header.png' width='1000' text-align='center'>
 
-# Carrier Owl
+# Carrier Owl  
+
+<img src='./data/images/carrier-owl.png' width='50' text-align='center'>
 伝書フクロウという意味です。
 
 ## About Carrier Owl
@@ -53,6 +55,10 @@
         - 参考サイト
             - [公式](https://slack.com/intl/ja-jp/help/articles/115005265063-Slack-での-Incoming-Webhook-の利用)
             - [紹介記事](https://qiita.com/vmmhypervisor/items/18c99624a84df8b31008)
+    - slack通知の時のアイコンが設定できますので、よければこれ使ってください。
+        - `data/images/carrier-owl.png`  
+            <img src='./data/images/carrier-owl.png' width='50'>
+
 
 6. webhook urlの設定
     - `config.yaml` 内の、`'your webhook url'` を取得したURlに変更します。
