@@ -1,5 +1,5 @@
 # slack id
-slack_id: 'your slack id'
+slack_id: 'your webhook url'
 
 # arxivの学問領域の指定
 subject: 'cs'
