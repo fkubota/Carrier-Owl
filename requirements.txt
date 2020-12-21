@@ -5,3 +5,4 @@ requests==2.23.0
 lxml==4.6.2
 numpy==1.19.4
 fastprogress==1.0.0
+pyyaml==5.3.1
