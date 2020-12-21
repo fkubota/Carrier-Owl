@@ -1,13 +1,17 @@
+import chromedriver_binary   # これは必ず入れる
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 import ast
+import time
 import datetime
 import numpy as np
 import textwrap
 from bs4 import BeautifulSoup
 import requests
 from fastprogress import progress_bar
-from googletrans import Translator
 import slackweb
 import warnings
+import urllib.parse
 
 # setting
 warnings.filterwarnings('ignore')
@@ -46,7 +50,7 @@ def get_articles_info():
 
 
 def serch_keywords(id_list):
-    translator = Translator()
+    # translator = Translator()
     urls = []
     titles = []
     abstracts = []
@@ -81,9 +85,9 @@ def serch_keywords(id_list):
                 sum_score += score
                 hit_kwd_list.append(word)
         if sum_score != 0:
-            title_trans = translator.translate(title, dest='ja', src='en').text
-            abstract_trans = translator.translate(
-                    abstract.replace("\n", ""), dest='ja', src='en').text
+            title_trans = get_translated_text('ja', 'en', title)
+            abstract = abstract.replace('\n', '')
+            abstract_trans = get_translated_text('ja', 'en', abstract)
             abstract_trans = textwrap.wrap(abstract_trans, 40)  # 40行で改行
             abstract_trans = '\n'.join(abstract_trans)
 
@@ -127,6 +131,52 @@ def send2slack(results):
         slack.notify(text=text_slack)
 
 
+def get_translated_text(from_lang, to_lang, from_text):
+    sleep_time = 1
+
+    # urlencode
+    from_text = urllib.parse.quote(from_text)
+
+    # url作成
+    url = 'https://www.deepl.com/translator#' + from_lang + '/' + to_lang + '/' + from_text
+
+    # ヘッドレスモードでブラウザを起動
+    options = Options()
+    options.add_argument('--headless')
+
+    # ブラウザーを起動
+    driver = webdriver.Chrome(options=options)
+    driver.get(url)
+    driver.implicitly_wait(10)  # 見つからないときは、10秒まで待つ
+
+    for i in range(30):
+        # 指定時間待つ
+        time.sleep(sleep_time)
+        html = driver.page_source
+        to_text = get_text_from_page_source(html)
+
+        try_count = i + 1
+
+        if to_text:
+            wait_time = sleep_time * try_count
+            print(str(wait_time) + "秒")
+
+            # アクセス修了
+            break
+
+    # ブラウザ停止
+    driver.quit()
+
+    return to_text
+
+
+def get_text_from_page_source(html):
+    soup = BeautifulSoup(html, features='lxml')
+    target_elem = soup.find(class_="lmt__translations_as_text__text_btn")
+    text = target_elem.text
+    return text
+
+
 def main():
     id_list = get_articles_info()
     results = serch_keywords(id_list)
@@ -135,4 +185,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

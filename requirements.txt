@@ -3,3 +3,5 @@ googletrans==4.0.0rc1
 slackweb==1.0.5
 requests==2.23.0
 lxml==4.6.2
+numpy==1.19.4
+fastprogress==1.0.0
