@@ -1,20 +1,28 @@
 # Carrier Owl
 伝書フクロウという意味です。
 
-## about Carrier Owl
+## About Carrier Owl
 前日のarxivから気になる論文にスコアを付けてslackに通知するシステムです。  
 通知の際に、abstractをDeepLで翻訳しています。  
 **導入は20minぐらいで終わります！！**  
 スコアは、ターゲットとなるキーワードに重み付けをして決まります。(例 resnet=5, kaggle=3, audio=3)    
 ユーザーが**好きな領域**、**好きなキーワード**を登録することで、通知される論文は変わります。
 
+- 登録キーワード例
+    ```
+    keywords:
+        sound: 1
+        audio: 1
+        sound feature: 3
+        audio feature: 3
+        noise removal: 2
+        spectrogram: 3
+    ```
+
 - 通知例(score昇順)
 
     <img src='./data/images/03.png' width='600'>
 
-- 登録キーワード例
-
-    <img src='./data/images/04.png' width='300'>
 
 ## Installation
 **requirements**  
