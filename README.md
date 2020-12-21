@@ -89,10 +89,13 @@
     - 動作確認してみましょう。
         1. `cd Carrier-Owl/src`
         2. `python3 carrier-owl.py`
-    - slackに通知がこれば成功です。
+    - slackに通知が行けば成功です。
 
 10. 定期実行
     - cron(linux)を使えば定期実行ができます。
     - 設定例(月火水木金の9:50に実行)
         - `50 9 * * 1,2,3,4,5 python3 ~/Git/Carrier-Owl/src/carrier-owl.py`
 
+
+### Reference
+- https://qiita.com/fujino-fpu/items/e94d4ff9e7a5784b2987
