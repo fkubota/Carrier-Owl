@@ -1,8 +1,9 @@
 import chromedriver_binary   # これは必ず入れる
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-import ast
+import os
 import time
+import yaml
 import datetime
 import numpy as np
 import textwrap
@@ -15,16 +16,12 @@ import urllib.parse
 
 # setting
 warnings.filterwarnings('ignore')
-weekday_dict = {0: 'Mon', 1: 'Tue', 2: 'Wed', 3: 'Thu',
-                4: 'Fri', 5: 'Sat', 6: 'Sun'}
-with open('/home/fkubota/Git/arxiv_notification/src/slack_id.txt') as f:
-    slack_id = f.read()
-slack = slackweb.Slack(url=slack_id)
-keywords_path = '/home/fkubota/Git/arxiv_notification/data/keywords.txt'
 
 
-def get_articles_info():
-    url = 'https://arxiv.org/list/cs/pastweek?show=100000'
+def get_articles_info(subject):
+    weekday_dict = {0: 'Mon', 1: 'Tue', 2: 'Wed', 3: 'Thu',
+                  4: 'Fri', 5: 'Sat', 6: 'Sun'}
+    url = f'https://arxiv.org/list/{subject}/pastweek?show=100000'
     response = requests.get(url)
     html = response.text
     year = datetime.date.today().year
@@ -49,8 +46,7 @@ def get_articles_info():
     return id_list
 
 
-def serch_keywords(id_list):
-    # translator = Translator()
+def serch_keywords(id_list, keywords_dict):
     urls = []
     titles = []
     abstracts = []
@@ -73,14 +69,8 @@ def serch_keywords(id_list):
         sum_score = 0
         hit_kwd_list = []
 
-        # serch
-        f = open(keywords_path)
-        keywords_list = f.readlines()  # 1行毎にファイル終端まで全て読む(改行文字も含まれる)
-        f.close()
-        for line in keywords_list:
-            keywords_dict = ast.literal_eval(line)
-            word = keywords_dict['word']
-            score = keywords_dict['score']
+        for word in keywords_dict.keys():
+            score = keywords_dict[word]
             if word.lower() in abstract.lower():  # 全部小文字にすれば、大文字少文字区別しなくていい
                 sum_score += score
                 hit_kwd_list.append(word)
@@ -102,7 +92,7 @@ def serch_keywords(id_list):
     return results
 
 
-def send2slack(results):
+def send2slack(results, slack):
     urls = results[0]
     titles = results[1]
     abstracts = results[2]
@@ -132,6 +122,10 @@ def send2slack(results):
 
 
 def get_translated_text(from_lang, to_lang, from_text):
+    '''
+    https://qiita.com/fujino-fpu/items/e94d4ff9e7a5784b2987
+    '''
+
     sleep_time = 1
 
     # urlencode
@@ -156,17 +150,13 @@ def get_translated_text(from_lang, to_lang, from_text):
         to_text = get_text_from_page_source(html)
 
         try_count = i + 1
-
         if to_text:
             wait_time = sleep_time * try_count
-            print(str(wait_time) + "秒")
-
             # アクセス修了
             break
 
     # ブラウザ停止
     driver.quit()
-
     return to_text
 
 
@@ -177,10 +167,21 @@ def get_text_from_page_source(html):
     return text
 
 
+def get_config():
+    file_abs_path = os.path.abspath(__file__)
+    file_dir = os.path.dirname(file_abs_path)
+    config_path = f'{file_dir}/../config.yaml'
+    with open(config_path, 'r') as yml:
+        config = yaml.load(yml)
+    return config
+
+
 def main():
-    id_list = get_articles_info()
-    results = serch_keywords(id_list)
-    send2slack(results)
+    config = get_config()
+    slack = slackweb.Slack(url=config['slack_id'])
+    id_list = get_articles_info(config['subject'])
+    results = serch_keywords(id_list, config['keywords'])
+    send2slack(results, slack)
 
 
 if __name__ == "__main__":
