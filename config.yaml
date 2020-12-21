@@ -1,24 +1,11 @@
 # slack id
-slack_id: ' https://hooks.slack.com/services/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'
+slack_id: 'your slack id'
 
 # arxivの学問領域の指定
 subject: 'cs'
 
 # 検索キーワード
 keywords:
-  sound: 1
-  audio: 1
-  anomaly detection: 3
-  dcase: 3
-  anomaly: 2
-  anomalies: 2
-  imbalance: 2
-  unbalance: 2
-  sound feature: 3
-  audio feature: 3
-  noise removal: 2
-  mfcc: 3
-  ivector: 1
-  spectrogram: 3
-  outlier detection: 1
-  koizumi: 3
+        kaggle: 3
+        resnet: 3
+        anomaly detection: 1
