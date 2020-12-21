@@ -52,7 +52,7 @@ def serch_keywords(id_list, keywords_dict):
     abstracts = []
     words = []
     scores = []
-    for id_ in progress_bar(id_list[50:55]):
+    for id_ in progress_bar(id_list):
         a = id_.find('a')
         _url = a.get('href')
         url = 'https://arxiv.org'+_url
@@ -69,10 +69,6 @@ def serch_keywords(id_list, keywords_dict):
         sum_score = 0
         hit_kwd_list = []
 
-        # serch
-        # f = open(keywords_path)
-        # keywords_list = f.readlines()  # 1行毎にファイル終端まで全て読む(改行文字も含まれる)
-        # f.close()
         for word in keywords_dict.keys():
             score = keywords_dict[word]
             if word.lower() in abstract.lower():  # 全部小文字にすれば、大文字少文字区別しなくていい
@@ -126,6 +122,10 @@ def send2slack(results, slack):
 
 
 def get_translated_text(from_lang, to_lang, from_text):
+    '''
+    https://qiita.com/fujino-fpu/items/e94d4ff9e7a5784b2987
+    '''
+
     sleep_time = 1
 
     # urlencode
