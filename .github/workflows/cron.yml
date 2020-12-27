@@ -7,7 +7,7 @@ on:
   
   push:
     branches:
-      - feat/confirm_settings
+      - test-send-to-slack
 
 jobs:
   ci:
