@@ -110,8 +110,10 @@
     - ここまでの変更がmasterブランチに反映されていれば、これですべての設定が完了したことになります。次の通知タイミングでslackに通知されます。
 
 8. **test**
-    - 試しに動かしてみたい場合は、`master` ブランチから `test-send-to-slack` ブランチを切って何でもいいので、`test-send-to-slack` にpushして見てください。`test-send-to-slack`という名前のブランチでpushが起こると、github actionsが走るように設定されてます。
+    - 試しに動かしてみたい場合は、`master` ブランチから `test-send-to-slack` ブランチを作成してください。`test-send-to-slack` ブランチが作られるとgithub actionsが走るようになっています。
+    - Actionsタブで様子を確認できます。
 
+        <img src='./data/images/08.png' width='800'>
 
 ### Reference
 - https://qiita.com/fujino-fpu/items/e94d4ff9e7a5784b2987
