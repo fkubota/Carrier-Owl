@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "carrier-owl"
+version = "0.1.0"
+description = ""
+authors = ["hppRC <hpp.ricecake@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+wheel = "^0.36.2"
+slackweb = "^1.0.5"
+requests = "^2.25.1"
+lxml = "^4.6.2"
+numpy = "^1.19.4"
+fastprogress = "^1.0.0"
+pyyaml = "^5.3.1"
+beautifulsoup4 = "^4.9.3"
+selenium = "^3.141.0"
+chromedriver-binary = "87.*"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

@@ -152,7 +152,7 @@ def get_translated_text(from_lang, to_lang, from_text):
         try_count = i + 1
         if to_text:
             wait_time = sleep_time * try_count
-            # アクセス修了
+            # アクセス終了
             break
 
     # ブラウザ停止
@@ -178,7 +178,7 @@ def get_config():
 
 def main():
     config = get_config()
-    slack = slackweb.Slack(url=config['slack_id'])
+    slack = slackweb.Slack(url=os.getenv("SLACK_ID"))
     id_list = get_articles_info(config['subject'])
     results = serch_keywords(id_list, config['keywords'])
     send2slack(results, slack)
