@@ -178,7 +178,7 @@ def get_config():
 
 def main():
     config = get_config()
-    slack = slackweb.Slack(url=os.getenv("SLACK_ID") or config['slack_id']) # 環境変数が設定されていればそちらを、なければ(=Noneなら) config.yml の値を使う
+    slack = slackweb.Slack(url=os.getenv("SLACK_ID"))
     id_list = get_articles_info(config['subject'])
     results = serch_keywords(id_list, config['keywords'])
     send2slack(results, slack)
