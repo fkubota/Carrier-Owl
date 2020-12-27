@@ -10,7 +10,7 @@
 
 前日のarxivから気になる論文にスコアを付けてslackに通知するシステムです。  
 通知の際に、abstractをDeepLで翻訳しています。  
-**導入は20minぐらいで終わります！！**  
+**導入に必要なのはgithubアカウントだけです。10minぐらいで設定は終わります！！**  
 スコアは、ターゲットとなるキーワードに重み付けをして決まります。(例 resnet=5, kaggle=3, audio=3)    
 ユーザーが**好きな領域**、**好きなキーワード**を登録することで、通知される論文は変わります。
 
@@ -32,9 +32,6 @@
 
 
 ## Installation
-**requirements**  
-- google chrome
-- python3
 
 **step**
 1. **このリポジトリをフォークする**
@@ -107,10 +104,13 @@
 
 6. **通知タイミングの調整**
     - デフォルト設定では、日本時間の平日9時50分に通知されるようになっています。この設定で問題ない方はこれで設定完了です。
-    -
+    - 通知タイミングのカスタマイズは、[こちら](https://github.com/fkubota/Carrier-Owl/blob/93e83a4ab7a67b127a3be2a2f1059dbed7dadbf0/.github/workflows/cron.yml#L6)を変更することで可能です。
 
 7. **push** 
     - ここまでの変更がmasterブランチに反映されていれば、これですべての設定が完了したことになります。次の通知タイミングでslackに通知されます。
+
+8. **test**
+    - 試しに動かしてみたい場合は、`master` ブランチから `test-send-to-slack` ブランチを切って何でもいいので、`test-send-to-slack` にpushして見てください。`test-send-to-slack`という名前のブランチでpushが起こると、github actionsが走るように設定されてます。
 
 
 ### Reference
