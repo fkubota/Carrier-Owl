@@ -14,7 +14,7 @@ import slackweb
 import warnings
 import urllib.parse
 from dataclasses import dataclass
-
+import arxiv
 # setting
 warnings.filterwarnings('ignore')
 
@@ -24,8 +24,8 @@ class Result:
     url: str
     title: str
     abstract: str
-    word: str
-    score: int
+    words: list
+    score: float = 0.0
 
 
 def get_articles_info(subject):
@@ -54,6 +54,38 @@ def get_articles_info(subject):
     bs = BeautifulSoup(articles_html)
     id_list = bs.find_all(class_='list-identifier')
     return id_list
+
+
+def calc_score(abst: str, keywords: dict) -> (float, list):
+    sum_score = 0.0
+    hit_kwd_list = []
+
+    for word in keywords.keys():
+        score = keywords[word]
+        if word.lower() in abst.lower():
+            sum_score += score
+            hit_kwd_list.append(word)
+    return sum_score, hit_kwd_list
+
+
+def search_keyword(_get_article_func, keywords: dict) -> list:
+    results = []
+
+    for article in progress_bar(_get_article_func()):
+        url = article['arxiv_url']
+        title = article['title']
+        abst = article['summary']
+        score, hit_keywords = calc_score(abst, keywords)
+        if score != 0:
+            title_trans = get_translated_text('ja', 'en', title)
+            abstract = abst.replace('\n', '')
+            abstract_trans = get_translated_text('ja', 'en', abstract)
+            abstract_trans = textwrap.wrap(abstract_trans, 40)  # 40行で改行
+            abstract_trans = '\n'.join(abstract_trans)
+            result = Result(url=url, title=title_trans, abstract=abstract_trans,
+                            score=score, words=hit_keywords)
+            results.append(result)
+    return results
 
 
 def serch_keywords(id_list, keywords_dict):
@@ -189,8 +221,14 @@ def get_config():
 def main():
     config = get_config()
     slack = slackweb.Slack(url=os.getenv("SLACK_ID"))
-    id_list = get_articles_info(config['subject'])
-    results = serch_keywords(id_list, config['keywords'])
+    subject = config['subject']
+    keywords = config['keywords']
+    arxiv_query = f'{subject}'
+    get_article_func = arxiv.query(query=arxiv_query,
+                                   max_results=1000,
+                                   sort_by='submittedDate',
+                                   iterative=True)
+    results = search_keyword(get_article_func, keywords)
     send2slack(results, slack)
 
 
