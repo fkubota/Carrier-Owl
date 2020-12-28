@@ -4,6 +4,7 @@ on:
   schedule:
     # github actions のデフォルトの time zone が UTC なので、日本時間 - 9時間 した値を書く
     - cron:  '50 0 * * 1,2,3,4,5'
+  workflow_dispatch:
   
   push:
     branches:
@@ -28,7 +29,7 @@ jobs:
 
       - name: Run owl
         run:
-          poetry run python src/carrier-owl.py
+          poetry run python src/carrier_owl.py
         env:
           SLACK_ID: ${{ secrets.SLACK_ID }}
 
