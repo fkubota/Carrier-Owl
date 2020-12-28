@@ -56,7 +56,8 @@
 
          <img src='./data/images/05.png' width='1000'>
         
-        b. `Secrets` をクリック。
+        b. `Secrets` をクリック。  
+
         c. `New repository secret` をクリック。
 
         d. Nameを `SLACK_ID` と入力。Valueを **step2** で取得した`webhook url`を貼り付けます。
