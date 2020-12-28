@@ -3,6 +3,7 @@ subject: 'cs'
 
 # 検索キーワード
 keywords:
-        kaggle: 3
-        resnet: 3
         anomaly detection: 1
+        gaussian process: 5
+        bayes: 3
+        semantic segmentaion: 2
