@@ -13,9 +13,19 @@ from fastprogress import progress_bar
 import slackweb
 import warnings
 import urllib.parse
+from dataclasses import dataclass
 
 # setting
 warnings.filterwarnings('ignore')
+
+
+@dataclass
+class Result:
+    url: str
+    title: str
+    abstract: str
+    word: str
+    score: int
 
 
 def get_articles_info(subject):
