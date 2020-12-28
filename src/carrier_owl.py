@@ -134,28 +134,20 @@ def serch_keywords(id_list, keywords_dict):
     return results
 
 
-def send2slack(results, slack):
-    urls = results[0]
-    titles = results[1]
-    abstracts = results[2]
-    words = results[3]
-    scores = results[4]
-
-    # rank
-    idxs_sort = np.argsort(scores)
-    idxs_sort = idxs_sort[::-1]
+def send2slack(results: list, slack: slackweb.Slack) -> None:
 
     # 通知
     star = '*'*120
     today = datetime.date.today()
     text = f'{star}\n \t \t {today}\n{star}'
     slack.notify(text=text)
-    for i in idxs_sort:
-        url = urls[i]
-        title = titles[i]
-        abstract = abstracts[i]
-        word = words[i]
-        score = scores[i]
+    # descending
+    for result in sorted(results, reverse=True, key=lambda x: x.score):
+        url = result.url
+        title = result.title
+        abstract = result.abstract
+        word = result.words
+        score = result.score
 
         text_slack = f'''
                     \n score: `{score}`\n hit keywords: `{word}`\n url: {url}\n title:    {title}\n abstract: \n \t {abstract}\n{star}
