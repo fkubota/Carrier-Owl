@@ -5,11 +5,8 @@ import os
 import time
 import yaml
 import datetime
-import numpy as np
 import textwrap
 from bs4 import BeautifulSoup
-import requests
-from fastprogress import progress_bar
 import slackweb
 import warnings
 import urllib.parse
