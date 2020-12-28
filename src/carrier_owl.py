@@ -71,7 +71,7 @@ def calc_score(abst: str, keywords: dict) -> (float, list):
 def search_keyword(_get_article_func, keywords: dict) -> list:
     results = []
 
-    for article in progress_bar(_get_article_func()):
+    for article in _get_article_func():
         url = article['arxiv_url']
         title = article['title']
         abst = article['summary']
