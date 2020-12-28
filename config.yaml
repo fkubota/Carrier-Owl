@@ -4,5 +4,10 @@ subject: 'cs'
 # 検索キーワード
 keywords:
         kaggle: 3
-        resnet: 3
-        anomaly detection: 1
+        metric learning: 1
+        graph: 1
+        tree: 1
+        forest: 1
+        ensemble: 1
+        gradient boosting: 1
+
