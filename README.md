@@ -51,6 +51,7 @@
 3. **webhook urlの設定**
     - 2で取得した `webhook url` を設定します。
     - 手順
+
         a. `settings` をクリック。
 
          <img src='./data/images/05.png' width='1000'>
@@ -115,5 +116,6 @@
 
         <img src='./data/images/08.png' width='800'>
 
-### Reference
-- https://qiita.com/fujino-fpu/items/e94d4ff9e7a5784b2987
+
+## Thanks
+- [hppさん](https://github.com/hppRC)のお力をお借りして、v2.0.0から `github` だけで動作するようになりました。ご協力ありがとうございました。
