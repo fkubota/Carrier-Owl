@@ -51,6 +51,7 @@
 3. **webhook urlの設定**
     - 2で取得した `webhook url` を設定します。
     - 手順
+
         a. `settings` をクリック。
 
          <img src='./data/images/05.png' width='1000'>
