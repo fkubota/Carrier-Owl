@@ -37,17 +37,17 @@ def calc_score(abst: str, keywords: dict) -> (float, list):
     return sum_score, hit_kwd_list
 
 
-def search_keyword(_get_article_func, keywords: dict) -> list:
+def search_keyword(articles: list, keywords: dict) -> list:
     results = []
 
-    for article in _get_article_func():
+    for article in articles:
         url = article['arxiv_url']
         title = article['title']
-        abst = article['summary']
-        score, hit_keywords = calc_score(abst, keywords)
+        abstract = article['summary']
+        score, hit_keywords = calc_score(abstract, keywords)
         if score != 0:
             title_trans = get_translated_text('ja', 'en', title)
-            abstract = abst.replace('\n', '')
+            abstract = abstract.replace('\n', '')
             abstract_trans = get_translated_text('ja', 'en', abstract)
             abstract_trans = textwrap.wrap(abstract_trans, 40)  # 40行で改行
             abstract_trans = '\n'.join(abstract_trans)
@@ -139,11 +139,11 @@ def main():
     subject = config['subject']
     keywords = config['keywords']
     arxiv_query = f'{subject}'
-    get_article_func = arxiv.query(query=arxiv_query,
-                                   max_results=1000,
-                                   sort_by='submittedDate',
-                                   iterative=True)
-    results = search_keyword(get_article_func, keywords)
+    articles = arxiv.query(query=arxiv_query,
+                           max_results=1000,
+                           sort_by='submittedDate',
+                           iterative=False)
+    results = search_keyword(articles, keywords)
     send2slack(results, slack)
 
 
