@@ -121,44 +121,6 @@ def send2slack(results, slack):
         slack.notify(text=text_slack)
 
 
-def send2line(results, line_notify_token):
-    line_notify_api = 'https://notify-api.line.me/api/notify'
-    headers = {'Authorization': f'Bearer {line_notify_token}'}
-
-    urls = results[0]
-    titles = results[1]
-    abstracts = results[2]
-    words = results[3]
-    scores = results[4]
-
-    # rank
-    idxs_sort = np.argsort(scores)
-    idxs_sort = idxs_sort[::-1]
-
-    # 通知
-    star = '*'*120
-
-    for i in idxs_sort:
-        url = urls[i]
-        title = titles[i]
-        abstract = abstracts[i]
-        word = words[i]
-        score = scores[i]
-
-        text_line = f'''
-        \n score: `{score}`
-        \n hit keywords: `{word}`
-        \n url: {url}
-        \n title:    {title}
-        \n abstract: 
-        \n \t {abstract}
-        \n {star}
-        '''
-
-        data = {'message': f'message: {text_line}'}
-        requests.post(line_notify_api, headers=headers, data=data)
-
-
 def get_translated_text(from_lang, to_lang, from_text):
     '''
     https://qiita.com/fujino-fpu/items/e94d4ff9e7a5784b2987
@@ -170,8 +132,7 @@ def get_translated_text(from_lang, to_lang, from_text):
     from_text = urllib.parse.quote(from_text)
 
     # url作成
-    url = 'https://www.deepl.com/translator#' + \
-        from_lang + '/' + to_lang + '/' + from_text
+    url = 'https://www.deepl.com/translator#' + from_lang + '/' + to_lang + '/' + from_text
 
     # ヘッドレスモードでブラウザを起動
     options = Options()
@@ -221,10 +182,6 @@ def main():
     id_list = get_articles_info(config['subject'])
     results = serch_keywords(id_list, config['keywords'])
     send2slack(results, slack)
-
-    # ============LINE Notify===================
-    line_notify_token = os.getenv("LINE_TOKEN")
-    send2line(results, line_notify_token)
 
 
 if __name__ == "__main__":
