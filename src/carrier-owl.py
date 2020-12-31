@@ -20,7 +20,7 @@ warnings.filterwarnings('ignore')
 
 def get_articles_info(subject):
     weekday_dict = {0: 'Mon', 1: 'Tue', 2: 'Wed', 3: 'Thu',
-                    4: 'Fri', 5: 'Sat', 6: 'Sun'}
+                  4: 'Fri', 5: 'Sat', 6: 'Sun'}
     url = f'https://arxiv.org/list/{subject}/pastweek?show=100000'
     response = requests.get(url)
     html = response.text
@@ -63,8 +63,8 @@ def serch_keywords(id_list, keywords_dict):
         bs = BeautifulSoup(html)
         title = bs.find('meta', attrs={'property': 'og:title'})['content']
         abstract = bs.find(
-            'meta',
-            attrs={'property': 'og:description'})['content']
+                'meta',
+                attrs={'property': 'og:description'})['content']
 
         sum_score = 0
         hit_kwd_list = []
