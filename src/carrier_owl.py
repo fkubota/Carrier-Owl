@@ -138,7 +138,12 @@ def main():
     slack = slackweb.Slack(url=os.getenv("SLACK_ID"))
     subject = config['subject']
     keywords = config['keywords']
-    arxiv_query = f'{subject}'
+
+    yesterday = datetime.datetime.today() - datetime.timedelta(days=1)
+    yesterday_str = yesterday.strftime('%Y%m%d')
+    # datetime format YYYYMMDDHHMMSS
+    arxiv_query = f'{subject} AND ' \
+                  f'submittedDate:[{yesterday_str}000000 TO {yesterday_str}235959]'
     articles = arxiv.query(query=arxiv_query,
                            max_results=1000,
                            sort_by='submittedDate',
