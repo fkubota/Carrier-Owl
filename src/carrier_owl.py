@@ -37,17 +37,17 @@ def calc_score(abst: str, keywords: dict) -> (float, list):
     return sum_score, hit_kwd_list
 
 
-def search_keyword(_get_article_func, keywords: dict) -> list:
+def search_keyword(articles: list, keywords: dict) -> list:
     results = []
 
-    for article in _get_article_func():
+    for article in articles:
         url = article['arxiv_url']
         title = article['title']
-        abst = article['summary']
-        score, hit_keywords = calc_score(abst, keywords)
+        abstract = article['summary']
+        score, hit_keywords = calc_score(abstract, keywords)
         if score != 0:
             title_trans = get_translated_text('ja', 'en', title)
-            abstract = abst.replace('\n', '')
+            abstract = abstract.replace('\n', '')
             abstract_trans = get_translated_text('ja', 'en', abstract)
             abstract_trans = textwrap.wrap(abstract_trans, 40)  # 40行で改行
             abstract_trans = '\n'.join(abstract_trans)
@@ -78,7 +78,7 @@ def send2slack(results: list, slack: slackweb.Slack) -> None:
         slack.notify(text=text_slack)
 
 
-def get_translated_text(from_lang, to_lang, from_text):
+def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
     '''
     https://qiita.com/fujino-fpu/items/e94d4ff9e7a5784b2987
     '''
@@ -117,14 +117,14 @@ def get_translated_text(from_lang, to_lang, from_text):
     return to_text
 
 
-def get_text_from_page_source(html):
+def get_text_from_page_source(html: str) -> str:
     soup = BeautifulSoup(html, features='lxml')
     target_elem = soup.find(class_="lmt__translations_as_text__text_btn")
     text = target_elem.text
     return text
 
 
-def get_config():
+def get_config() -> dict:
     file_abs_path = os.path.abspath(__file__)
     file_dir = os.path.dirname(file_abs_path)
     config_path = f'{file_dir}/../config.yaml'
@@ -138,12 +138,17 @@ def main():
     slack = slackweb.Slack(url=os.getenv("SLACK_ID"))
     subject = config['subject']
     keywords = config['keywords']
-    arxiv_query = f'{subject}'
-    get_article_func = arxiv.query(query=arxiv_query,
-                                   max_results=1000,
-                                   sort_by='submittedDate',
-                                   iterative=True)
-    results = search_keyword(get_article_func, keywords)
+
+    yesterday = datetime.datetime.today() - datetime.timedelta(days=1)
+    yesterday_str = yesterday.strftime('%Y%m%d')
+    # datetime format YYYYMMDDHHMMSS
+    arxiv_query = f'{subject} AND ' \
+                  f'submittedDate:[{yesterday_str}000000 TO {yesterday_str}235959]'
+    articles = arxiv.query(query=arxiv_query,
+                           max_results=1000,
+                           sort_by='submittedDate',
+                           iterative=False)
+    results = search_keyword(articles, keywords)
     send2slack(results, slack)
 
 
