@@ -5,6 +5,7 @@ import os
 import time
 import yaml
 import datetime
+import argparse
 import textwrap
 from bs4 import BeautifulSoup
 import slackweb
@@ -172,10 +173,14 @@ def get_config() -> dict:
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--slack_id', default=None)
+    parser.add_argument('--line_token', default=None)
+    args = parser.parse_args()
     config = get_config()
-    slack = slackweb.Slack(url=os.getenv("SLACK_ID"))
     subject = config['subject']
     keywords = config['keywords']
+
 
     yesterday = datetime.datetime.today() - datetime.timedelta(days=1)
     yesterday_str = yesterday.strftime('%Y%m%d')
@@ -188,10 +193,17 @@ def main():
                            sort_by='submittedDate',
                            iterative=False)
     results = search_keyword(articles, keywords)
-    send2slack(results, slack)
 
-    line_notify_token = os.getenv("LINE_TOKEN")
-    send2line(results, line_notify_token)
+    # slack
+    slack_id = os.getenv("SLACK_ID") or args.slack_id
+    if slack_id is not None:
+        slack = slackweb.Slack(url=slack_id)
+        send2slack(results, slack)
+
+    # line
+    line_notify_token = os.getenv("LINE_TOKEN") or args.line_token
+    if line_notify_token is not None:
+        send2line(results, line_notify_token)
 
 
 if __name__ == "__main__":
