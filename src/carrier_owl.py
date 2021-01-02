@@ -92,6 +92,8 @@ def send2line(results, line_notify_token):
     star = '*'*120
     today = datetime.date.today()
     text = f'{star}\n \t \t {today}\n{star}'
+    data = {'message': f'message: {text}'}
+    requests.post(line_notify_api, headers=headers, data=data)
     # descending
     for result in sorted(results, reverse=True, key=lambda x: x.score):
         url = result.url
