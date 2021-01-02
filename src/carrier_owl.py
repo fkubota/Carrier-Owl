@@ -5,10 +5,10 @@ import os
 import time
 import yaml
 import datetime
+import slackweb
 import argparse
 import textwrap
 from bs4 import BeautifulSoup
-import slackweb
 import warnings
 import urllib.parse
 from dataclasses import dataclass
@@ -60,63 +60,44 @@ def search_keyword(articles: list, keywords: dict) -> list:
     return results
 
 
-def send2slack(results: list, slack: slackweb.Slack) -> None:
+def send2app(text: str, slack_id: str, line_token: str) -> None:
+    # slack
+    if slack_id is not None:
+        slack = slackweb.Slack(url=slack_id)
+        slack.notify(text=text)
 
-    # 通知
-    star = '*'*120
-    today = datetime.date.today()
-    text = f'{star}\n \t \t {today}\n{star}'
-    slack.notify(text=text)
-    # descending
-    for result in sorted(results, reverse=True, key=lambda x: x.score):
-        url = result.url
-        title = result.title
-        abstract = result.abstract
-        word = result.words
-        score = result.score
-
-        text_slack = f'''
-        \n score: `{score}`
-        \n hit keywords: `{word}`
-        \n url: {url}
-        \n title:    {title}
-        \n abstract:
-        \n \t {abstract}
-        \n {star}
-        '''
-        slack.notify(text=text_slack)
-
-
-def send2line(results, line_notify_token):
-    line_notify_api = 'https://notify-api.line.me/api/notify'
-    headers = {'Authorization': f'Bearer {line_notify_token}'}
-
-    # 通知
-    star = '*'*120
-    today = datetime.date.today()
-    text = f'{star}\n \t \t {today}\n{star}'
-    data = {'message': f'message: {text}'}
-    requests.post(line_notify_api, headers=headers, data=data)
-    # descending
-    for result in sorted(results, reverse=True, key=lambda x: x.score):
-        url = result.url
-        title = result.title
-        abstract = result.abstract
-        word = result.words
-        score = result.score
-
-        text_line = f'''
-        \n score: `{score}`
-        \n hit keywords: `{word}`
-        \n url: {url}
-        \n title:    {title}
-        \n abstract:
-        \n \t {abstract}
-        \n {star}
-        '''
-
-        data = {'message': f'message: {text_line}'}
+    # line
+    if line_token is not None:
+        line_notify_api = 'https://notify-api.line.me/api/notify'
+        headers = {'Authorization': f'Bearer {line_token}'}
+        data = {'message': f'message: {text}'}
         requests.post(line_notify_api, headers=headers, data=data)
+
+
+def notify(results: list, slack_id: str, line_token: str) -> None:
+    # 通知
+    star = '*'*120
+    today = datetime.date.today()
+    text = f'{star}\n \t \t {today}\n{star}'
+    send2app(text, slack_id, line_token)
+    # descending
+    for result in sorted(results, reverse=True, key=lambda x: x.score):
+        url = result.url
+        title = result.title
+        abstract = result.abstract
+        word = result.words
+        score = result.score
+
+        text = f'''
+        \n score: `{score}`
+        \n hit keywords: `{word}`
+        \n url: {url}
+        \n title:    {title}
+        \n abstract:
+        \n \t {abstract}
+        \n {star}
+        '''
+        send2app(text, slack_id, line_token)
 
 
 def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
@@ -195,16 +176,9 @@ def main():
                            iterative=False)
     results = search_keyword(articles, keywords)
 
-    # slack
     slack_id = os.getenv("SLACK_ID") or args.slack_id
-    if slack_id is not None:
-        slack = slackweb.Slack(url=slack_id)
-        send2slack(results, slack)
-
-    # line
-    line_notify_token = os.getenv("LINE_TOKEN") or args.line_token
-    if line_notify_token is not None:
-        send2line(results, line_notify_token)
+    line_token = os.getenv("LINE_TOKEN") or args.line_token
+    notify(results, slack_id, line_token)
 
 
 if __name__ == "__main__":
