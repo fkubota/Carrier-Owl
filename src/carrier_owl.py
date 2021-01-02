@@ -5,6 +5,7 @@ import os
 import time
 import yaml
 import datetime
+import argparse
 import textwrap
 from bs4 import BeautifulSoup
 import slackweb
@@ -52,8 +53,9 @@ def search_keyword(articles: list, keywords: dict) -> list:
             abstract_trans = get_translated_text('ja', 'en', abstract)
             abstract_trans = textwrap.wrap(abstract_trans, 40)  # 40行で改行
             abstract_trans = '\n'.join(abstract_trans)
-            result = Result(url=url, title=title_trans, abstract=abstract_trans,
-                            score=score, words=hit_keywords)
+            result = Result(
+                    url=url, title=title_trans, abstract=abstract_trans,
+                    score=score, words=hit_keywords)
             results.append(result)
     return results
 
@@ -78,7 +80,7 @@ def send2slack(results: list, slack: slackweb.Slack) -> None:
         \n hit keywords: `{word}`
         \n url: {url}
         \n title:    {title}
-        \n abstract: 
+        \n abstract:
         \n \t {abstract}
         \n {star}
         '''
@@ -108,13 +110,14 @@ def send2line(results, line_notify_token):
         \n hit keywords: `{word}`
         \n url: {url}
         \n title:    {title}
-        \n abstract: 
+        \n abstract:
         \n \t {abstract}
         \n {star}
         '''
 
         data = {'message': f'message: {text_line}'}
         requests.post(line_notify_api, headers=headers, data=data)
+
 
 def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
     '''
@@ -127,7 +130,8 @@ def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
     from_text = urllib.parse.quote(from_text)
 
     # url作成
-    url = 'https://www.deepl.com/translator#' + from_lang + '/' + to_lang + '/' + from_text
+    url = 'https://www.deepl.com/translator#' \
+        + from_lang + '/' + to_lang + '/' + from_text
 
     # ヘッドレスモードでブラウザを起動
     options = Options()
@@ -144,10 +148,7 @@ def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
         html = driver.page_source
         to_text = get_text_from_page_source(html)
 
-        try_count = i + 1
         if to_text:
-            wait_time = sleep_time * try_count
-            # アクセス終了
             break
 
     # ブラウザ停止
@@ -172,8 +173,13 @@ def get_config() -> dict:
 
 
 def main():
+    # debug用
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--slack_id', default=None)
+    parser.add_argument('--line_token', default=None)
+    args = parser.parse_args()
+
     config = get_config()
-    slack = slackweb.Slack(url=os.getenv("SLACK_ID"))
     subject = config['subject']
     keywords = config['keywords']
 
@@ -181,16 +187,24 @@ def main():
     yesterday_str = yesterday.strftime('%Y%m%d')
     # datetime format YYYYMMDDHHMMSS
     arxiv_query = f'{subject} AND ' \
-                  f'submittedDate:[{yesterday_str}000000 TO {yesterday_str}235959]'
+                  f'submittedDate:' \
+                  f'[{yesterday_str}000000 TO {yesterday_str}235959]'
     articles = arxiv.query(query=arxiv_query,
                            max_results=1000,
                            sort_by='submittedDate',
                            iterative=False)
     results = search_keyword(articles, keywords)
-    send2slack(results, slack)
 
-    line_notify_token = os.getenv("LINE_TOKEN")
-    send2line(results, line_notify_token)
+    # slack
+    slack_id = os.getenv("SLACK_ID") or args.slack_id
+    if slack_id is not None:
+        slack = slackweb.Slack(url=slack_id)
+        send2slack(results, slack)
+
+    # line
+    line_notify_token = os.getenv("LINE_TOKEN") or args.line_token
+    if line_notify_token is not None:
+        send2line(results, line_notify_token)
 
 
 if __name__ == "__main__":
