@@ -12,6 +12,7 @@ import warnings
 import urllib.parse
 from dataclasses import dataclass
 import arxiv
+import requests
 # setting
 warnings.filterwarnings('ignore')
 
@@ -73,10 +74,47 @@ def send2slack(results: list, slack: slackweb.Slack) -> None:
         score = result.score
 
         text_slack = f'''
-                    \n score: `{score}`\n hit keywords: `{word}`\n url: {url}\n title:    {title}\n abstract: \n \t {abstract}\n{star}
-                       '''
+        \n score: `{score}`
+        \n hit keywords: `{word}`
+        \n url: {url}
+        \n title:    {title}
+        \n abstract: 
+        \n \t {abstract}
+        \n {star}
+        '''
         slack.notify(text=text_slack)
 
+
+def send2line(results, line_notify_token):
+    line_notify_api = 'https://notify-api.line.me/api/notify'
+    headers = {'Authorization': f'Bearer {line_notify_token}'}
+
+    # 通知
+    star = '*'*120
+    today = datetime.date.today()
+    text = f'{star}\n \t \t {today}\n{star}'
+    data = {'message': f'message: {text}'}
+    requests.post(line_notify_api, headers=headers, data=data)
+    # descending
+    for result in sorted(results, reverse=True, key=lambda x: x.score):
+        url = result.url
+        title = result.title
+        abstract = result.abstract
+        word = result.words
+        score = result.score
+
+        text_line = f'''
+        \n score: `{score}`
+        \n hit keywords: `{word}`
+        \n url: {url}
+        \n title:    {title}
+        \n abstract: 
+        \n \t {abstract}
+        \n {star}
+        '''
+
+        data = {'message': f'message: {text_line}'}
+        requests.post(line_notify_api, headers=headers, data=data)
 
 def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
     '''
@@ -150,6 +188,9 @@ def main():
                            iterative=False)
     results = search_keyword(articles, keywords)
     send2slack(results, slack)
+
+    line_notify_token = os.getenv("LINE_TOKEN")
+    send2line(results, line_notify_token)
 
 
 if __name__ == "__main__":
