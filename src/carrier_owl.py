@@ -173,10 +173,12 @@ def get_config() -> dict:
 
 
 def main():
+    # debug用
     parser = argparse.ArgumentParser()
     parser.add_argument('--slack_id', default=None)
     parser.add_argument('--line_token', default=None)
     args = parser.parse_args()
+
     config = get_config()
     subject = config['subject']
     keywords = config['keywords']
