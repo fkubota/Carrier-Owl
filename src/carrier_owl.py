@@ -92,7 +92,6 @@ def send2line(results, line_notify_token):
     star = '*'*120
     today = datetime.date.today()
     text = f'{star}\n \t \t {today}\n{star}'
-    slack.notify(text=text)
     # descending
     for result in sorted(results, reverse=True, key=lambda x: x.score):
         url = result.url
@@ -101,7 +100,7 @@ def send2line(results, line_notify_token):
         word = result.words
         score = result.score
 
-        text_slack = f'''
+        text_line = f'''
         \n score: `{score}`
         \n hit keywords: `{word}`
         \n url: {url}
