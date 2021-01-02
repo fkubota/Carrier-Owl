@@ -181,7 +181,6 @@ def main():
     subject = config['subject']
     keywords = config['keywords']
 
-
     yesterday = datetime.datetime.today() - datetime.timedelta(days=1)
     yesterday_str = yesterday.strftime('%Y%m%d')
     # datetime format YYYYMMDDHHMMSS
