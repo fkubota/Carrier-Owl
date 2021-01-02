@@ -78,6 +78,43 @@ def send2slack(results: list, slack: slackweb.Slack) -> None:
         slack.notify(text=text_slack)
 
 
+def send2line(results, line_notify_token):
+    line_notify_api = 'https://notify-api.line.me/api/notify'
+    headers = {'Authorization': f'Bearer {line_notify_token}'}
+
+    urls = results[0]
+    titles = results[1]
+    abstracts = results[2]
+    words = results[3]
+    scores = results[4]
+
+    # rank
+    idxs_sort = np.argsort(scores)
+    idxs_sort = idxs_sort[::-1]
+
+    # 通知
+    star = '*'*120
+
+    for i in idxs_sort:
+        url = urls[i]
+        title = titles[i]
+        abstract = abstracts[i]
+        word = words[i]
+        score = scores[i]
+
+        text_line = f'''
+        \n score: `{score}`
+        \n hit keywords: `{word}`
+        \n url: {url}
+        \n title:    {title}
+        \n abstract: 
+        \n \t {abstract}
+        \n {star}
+        '''
+
+        data = {'message': f'message: {text_line}'}
+        requests.post(line_notify_api, headers=headers, data=data)
+
 def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
     '''
     https://qiita.com/fujino-fpu/items/e94d4ff9e7a5784b2987
@@ -150,6 +187,9 @@ def main():
                            iterative=False)
     results = search_keyword(articles, keywords)
     send2slack(results, slack)
+
+    line_notify_token = os.getenv("LINE_TOKEN")
+    send2line(results, line_notify_token)
 
 
 if __name__ == "__main__":
