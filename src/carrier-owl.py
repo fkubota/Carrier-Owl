@@ -61,6 +61,11 @@ def serch_keywords(id_list, keywords_dict):
         html = response.text
 
         bs = BeautifulSoup(html)
+        
+        # metaデータが見つからないときはスキップ
+        if bs.find('meta') is None :
+            continue
+
         title = bs.find('meta', attrs={'property': 'og:title'})['content']
         abstract = bs.find(
                 'meta',
