@@ -131,10 +131,10 @@
     - ここまでの変更がmasterブランチに反映されていれば、これですべての設定が完了したことになります。次の通知タイミングでslackに通知されます。
 
 9. **test**
-    - 試しに動かしてみたい場合は、`master` ブランチから `test-send-to-slack` ブランチを作成してください。`test-send-to-slack` ブランチが作られるとgithub actionsが走って問題なければ通知されるはずです。
-    - Actionsタブで様子を確認できます。
+    - github actions の `workflow_dispatch` を使って通知タイミングを待たずにいつでも実行することができます。
+    - Actionsタブでから、`Run workflow` をクリックすることでいつでも実行可能です。
 
-        <img src='./data/images/08.png' width='800'>
+        <img src='./data/images/11.png' width='800'>
 
 
 ## Thanks
