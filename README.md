@@ -136,6 +136,15 @@
 
         <img src='./data/images/11.png' width='800'>
 
+## その他の設定
+- **score threshold**
+    通知するスコアに閾値を設定することができます。`score >= scrore_threshold` を満たす論文のみ通知させることができま
+    す。 `config.yaml` 内の、`score_threshold` で設定できます(デフォルトは0になっています)。
+
 
 ## Thanks
-- [hppさん](https://github.com/hppRC)のお力をお借りして、v2.0.0から `github` だけで動作するようになりました。ご協力ありがとうございました。
+- [hppさん](https://github.com/hppRC)のPRにより、github actionsを使うことにより `github` だけで動作するようになりました。
+
+- [wakamezakeさん](https://github.com/wakamezake)のPRにより、arxiv-apiを導入しました。
+
+- [amagaeruさん](https://github.com/amagaeru1113)のPRにより、LINE通知機能を実装しました。
