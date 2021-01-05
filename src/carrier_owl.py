@@ -28,6 +28,13 @@ class Result:
     score: float = 0.0
 
 
+@dataclass
+class Address:
+    slack_id: str or None
+    line_token: str or None
+    discord_id: str or None
+
+
 def calc_score(abst: str, keywords: dict) -> (float, list):
     sum_score = 0.0
     hit_kwd_list = []
@@ -63,35 +70,35 @@ def search_keyword(
     return results
 
 
-def send2app(text: str, slack_id: str, line_token: str, discord_webhook_url: str) -> None:
+def send2app(text: str, address: Address) -> None:
     # slack
-    if slack_id is not None:
-        slack = slackweb.Slack(url=slack_id)
+    if address.slack_id is not None:
+        slack = slackweb.Slack(url=address.slack_id)
         slack.notify(text=text)
 
     # line
-    if line_token is not None:
+    if address.line_token is not None:
         line_notify_api = 'https://notify-api.line.me/api/notify'
-        headers = {'Authorization': f'Bearer {line_token}'}
+        headers = {'Authorization': f'Bearer {address.line_token}'}
         data = {'message': f'message: {text}'}
         requests.post(line_notify_api, headers=headers, data=data)
 
     # discord
-    if discord_webhook_url is not None:
+    if address.discord_id is not None:
         main_content = {'content': text}
         headers = {'Content-Type': 'application/json'}
-        requests.post(discord_webhook_url,
+        requests.post(address.discord_id,
                       json.dumps(main_content),
                       headers=headers)
 
 
-def notify(results: list, slack_id: str, line_token: str, discord_webhook_url: str) -> None:
+def notify(results: list, address: Address) -> None:
     # 通知
     star = '*'*80
     today = datetime.date.today()
     n_articles = len(results)
     text = f'{star}\n \t \t {today}\tnum of articles = {n_articles}\n{star}'
-    send2app(text, slack_id, line_token, discord_webhook_url)
+    send2app(text, slack_id, line_token, discord_id)
     # descending
     for result in sorted(results, reverse=True, key=lambda x: x.score):
         url = result.url
@@ -108,7 +115,7 @@ def notify(results: list, slack_id: str, line_token: str, discord_webhook_url: s
                f'\n \t {abstract}'\
                f'\n {star}'
 
-        send2app(text, slack_id, line_token, discord_webhook_url)
+        send2app(text, address)
 
 
 def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
@@ -188,10 +195,13 @@ def main():
                            iterative=False)
     results = search_keyword(articles, keywords, score_threshold)
 
-    slack_id = os.getenv("SLACK_ID") or args.slack_id
-    line_token = os.getenv("LINE_TOKEN") or args.line_token
-    discord_webhook_url = os.getenv("DISCORD_ID") or args.discord_id
-    notify(results, slack_id, line_token, discord_webhook_url)
+    address = Address(slack_id=os.getenv("SLACK_ID") or args.slack_id,
+                      line_token=os.getenv("LINE_TOKEN") or args.line_token,
+                      discord_id=os.getenv("DISCORD_ID") or args.discord_id)
+    # slack_id = os.getenv("SLACK_ID") or args.slack_id
+    # line_token = os.getenv("LINE_TOKEN") or args.line_token
+    # discord_id = os.getenv("DISCORD_ID") or args.discord_id
+    notify(results, address)
 
 
 if __name__ == "__main__":
