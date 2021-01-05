@@ -52,7 +52,7 @@
 
 
 4. **webhook urlの設定**
-    - step3で取得した `webhook url` を設定します。
+    - step3で取得した `webhook url`(または `line token`) を設定します。
     - 手順
 
         a. `settings` をクリック。
@@ -70,22 +70,37 @@
         e. 最後に`Add secret`をクリックして登録完了です。
 
 5. **領域の設定**
+
     - 通知させたいarxivの論文の領域を指定します。
     - **(computer scienceの人はこの手順を飛ばしてstep8に進んでも構いません)**
-    - `computer science` なら `cs` などそれぞれに名前がついています。以下の手順で確認します。
     - 手順
-        1. [arxiv.org](https://arxiv.org)にアクセス
-        2. 通知させたい領域の**resent**と書かれた部分をクリック。
+        1. 以下の表から通知を受け取りたいsubjectを選択して、urlをクリックしてください。
 
-            <img src='./data/images/02.png' width='400'>
-        
-        3. 遷移後のページのurlを見て、`list/`と`/recent`に囲われている文字列を使います。
+        | subject                                    | category | url                                       |
+        | ------------------------------------------ | -------- | ----------------------------------------- |
+        | Astrophysics                               | astro-ph | [url](https://arxiv.org/archive/astro-ph) |
+        | Condensed Matter                           | cond-mat | [url](https://arxiv.org/archive/cond-mat) |
+        | Physics                                    | physics  | [url](https://arxiv.org/archive/physics)  |
+        | Mathematics                                | math     | [url](https://arxiv.org/archive/math)     |
+        | Nonlinear Sciences                         | nlin     | [url](https://arxiv.org/archive/nlin)     |
+        | Computer Science                           | cs       | [url](https://arxiv.org/archive/cs)       |
+        | Quantitative Biology                       | q-bio    | [url](https://arxiv.org/archive/q-bio)    |
+        | Quantitative Finance                       | q-fin    | [url](https://arxiv.org/archive/q-fin)    |
+        | Statistics                                 | stat     | [url](https://arxiv.org/archive/stat)     |
+        | Electrical Engineering and Systems Science | eess     | [url](https://arxiv.org/archive/eess)     |
+        | Economics                                  | econ     | [url](https://arxiv.org/archive/econ)     |
 
-            - computer scienceの例: `https://arxiv.org/list/cs/recent`
-            - この場合、`cs` をこの後利用する。
-        
-        4. `config.yaml` 内の、`subject` を3で取得した文字列に変更します。(デフォルトでは`cs`になっています。)
+        2. さらに細かい分類を確認します
+            - 以下の例は、subject = `cs` をクリックした場合です。`cs.AI` や `cs.CL`　などが細かな分類になります。
 
+            <img src='./data/images/10.png' width='600'>
+
+        3. `config.yaml` 内の、`subject` を2で確認した文字列に変更します。
+            - デフォルトでは`cat:cs.*`になっています。これは、cs以下の小分類すべてを通知するという設定になります。
+            - **複数領域指定**
+                - 複数領域指定も可能です。以下のようにします。
+                    - ex1) cat:physics.space-ph OR cat:cs.ai
+                    - ex2) cat:physics.* OR cat:cs.ai
 
 
 6. **キーワードの設定**
