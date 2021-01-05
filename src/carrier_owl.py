@@ -91,15 +91,14 @@ def notify(results: list, slack_id: str, line_token: str) -> None:
         word = result.words
         score = result.score
 
-        text = f'''
-        \n score: `{score}`
-        \n hit keywords: `{word}`
-        \n url: {url}
-        \n title:    {title}
-        \n abstract:
-        \n \t {abstract}
-        \n {star}
-        '''
+        text = f'\n score: `{score}`'\
+               f'\n hit keywords: `{word}`'\
+               f'\n url: {url}'\
+               f'\n title:    {title}'\
+               f'\n abstract:'\
+               f'\n \t {abstract}'\
+               f'\n {star}'
+
         send2app(text, slack_id, line_token)
 
 
@@ -171,7 +170,7 @@ def main():
     yesterday = datetime.datetime.today() - datetime.timedelta(days=1)
     yesterday_str = yesterday.strftime('%Y%m%d')
     # datetime format YYYYMMDDHHMMSS
-    arxiv_query = f'{subject} AND ' \
+    arxiv_query = f'({subject}) AND ' \
                   f'submittedDate:' \
                   f'[{yesterday_str}000000 TO {yesterday_str}235959]'
     articles = arxiv.query(query=arxiv_query,
