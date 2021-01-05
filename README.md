@@ -43,7 +43,13 @@
 
         <img src='./data/images/09.png' width='600'>
 
-    
+
+3. **通知先の設定**
+    通知したいアプリケーションに応じて設定を行います。いくつでも設定可能です。
+
+    - Slackに通知する場合は[こちら]('./../docs/slack_setup.md')
+    - LINEに通知する場合[こちら]()
+
 3. **webhook urlの取得**
     - 特定のslackチャンネルに流すための準備を行います。
     - incomming webhookの**webhook url**を取得してください。
