@@ -47,8 +47,9 @@
 3. **通知先の設定**
     通知したいアプリケーションに応じて設定を行います。いくつでも設定可能です。
 
-    - Slackに通知する場合は[こちら]('./../docs/slack_setup.md')
-    - LINEに通知する場合[こちら]()
+    - Slackに通知する場合は[こちら]('github.com/fkubota/Carrier-Owl/blob/master/docs/slack_setup.md')
+    - Slackに通知する場合は[こちら]('docs/slack_setup.md')
+    - LINEに通知する場合[こちら]('github.com/fkubota/Carrier-Owl/blob/master/docs/line_setup.md')
 
 3. **webhook urlの取得**
     - 特定のslackチャンネルに流すための準備を行います。

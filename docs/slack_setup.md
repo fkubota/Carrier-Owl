@@ -1,5 +1,4 @@
-
-3. **webhook urlの取得**
+1. **webhook urlの取得**
     - 特定のslackチャンネルに流すための準備を行います。
     - incomming webhookの**webhook url**を取得してください。
         - 参考サイト
@@ -11,7 +10,7 @@
 
 
 
-4. **webhook urlの設定**
+1. **webhook urlの設定**
     - step3で取得した `webhook url` を設定します。
     - 手順
 
