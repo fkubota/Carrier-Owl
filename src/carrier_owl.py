@@ -4,6 +4,7 @@ from selenium.webdriver.chrome.options import Options
 import os
 import time
 import yaml
+import json
 import datetime
 import slackweb
 import argparse
@@ -41,7 +42,7 @@ def calc_score(abst: str, keywords: dict) -> (float, list):
 
 def search_keyword(
         articles: list, keywords: dict, score_threshold: float
-        ) -> list:
+) -> list:
     results = []
 
     for article in articles:
@@ -56,13 +57,13 @@ def search_keyword(
             abstract_trans = textwrap.wrap(abstract_trans, 40)  # 40行で改行
             abstract_trans = '\n'.join(abstract_trans)
             result = Result(
-                    url=url, title=title_trans, abstract=abstract_trans,
-                    score=score, words=hit_keywords)
+                url=url, title=title_trans, abstract=abstract_trans,
+                score=score, words=hit_keywords)
             results.append(result)
     return results
 
 
-def send2app(text: str, slack_id: str, line_token: str) -> None:
+def send2app(text: str, slack_id: str, line_token: str, discord_webhook_url: str) -> None:
     # slack
     if slack_id is not None:
         slack = slackweb.Slack(url=slack_id)
@@ -75,14 +76,22 @@ def send2app(text: str, slack_id: str, line_token: str) -> None:
         data = {'message': f'message: {text}'}
         requests.post(line_notify_api, headers=headers, data=data)
 
+    # discord
+    if discord_webhook_url is not None:
+        main_content = {'content': text}
+        headers = {'Content-Type': 'application/json'}
+        requests.post(discord_webhook_url,
+                      json.dumps(main_content),
+                      headers=headers)
 
-def notify(results: list, slack_id: str, line_token: str) -> None:
+
+def notify(results: list, slack_id: str, line_token: str, discord_webhook_url: str) -> None:
     # 通知
     star = '*'*80
     today = datetime.date.today()
     n_articles = len(results)
     text = f'{star}\n \t \t {today}\tnum of articles = {n_articles}\n{star}'
-    send2app(text, slack_id, line_token)
+    send2app(text, slack_id, line_token, discord_webhook_url)
     # descending
     for result in sorted(results, reverse=True, key=lambda x: x.score):
         url = result.url
@@ -99,7 +108,7 @@ def notify(results: list, slack_id: str, line_token: str) -> None:
                f'\n \t {abstract}'\
                f'\n {star}'
 
-        send2app(text, slack_id, line_token)
+        send2app(text, slack_id, line_token, discord_webhook_url)
 
 
 def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
@@ -181,7 +190,8 @@ def main():
 
     slack_id = os.getenv("SLACK_ID") or args.slack_id
     line_token = os.getenv("LINE_TOKEN") or args.line_token
-    notify(results, slack_id, line_token)
+    discord_webhook_url = os.getenv("DISCORD_ID") or args.discord_id
+    notify(results, slack_id, line_token, discord_webhook_url)
 
 
 if __name__ == "__main__":
