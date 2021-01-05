@@ -39,7 +39,9 @@ def calc_score(abst: str, keywords: dict) -> (float, list):
     return sum_score, hit_kwd_list
 
 
-def search_keyword(articles: list, keywords: dict) -> list:
+def search_keyword(
+        articles: list, keywords: dict, score_threshold: float
+        ) -> list:
     results = []
 
     for article in articles:
@@ -47,7 +49,7 @@ def search_keyword(articles: list, keywords: dict) -> list:
         title = article['title']
         abstract = article['summary']
         score, hit_keywords = calc_score(abstract, keywords)
-        if score != 0:
+        if (score != 0) and (score >= score_threshold):
             title_trans = get_translated_text('ja', 'en', title)
             abstract = abstract.replace('\n', '')
             abstract_trans = get_translated_text('ja', 'en', abstract)
@@ -164,6 +166,7 @@ def main():
     config = get_config()
     subject = config['subject']
     keywords = config['keywords']
+    score_threshold = float(config['score_threshold'])
 
     yesterday = datetime.datetime.today() - datetime.timedelta(days=1)
     yesterday_str = yesterday.strftime('%Y%m%d')
@@ -175,7 +178,7 @@ def main():
                            max_results=1000,
                            sort_by='submittedDate',
                            iterative=False)
-    results = search_keyword(articles, keywords)
+    results = search_keyword(articles, keywords, score_threshold)
 
     slack_id = os.getenv("SLACK_ID") or args.slack_id
     line_token = os.getenv("LINE_TOKEN") or args.line_token
