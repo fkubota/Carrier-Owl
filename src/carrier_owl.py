@@ -98,7 +98,7 @@ def notify(results: list, address: Address) -> None:
     today = datetime.date.today()
     n_articles = len(results)
     text = f'{star}\n \t \t {today}\tnum of articles = {n_articles}\n{star}'
-    send2app(text, slack_id, line_token, discord_id)
+    send2app(text, address)
     # descending
     for result in sorted(results, reverse=True, key=lambda x: x.score):
         url = result.url
