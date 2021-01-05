@@ -9,6 +9,7 @@ on:
   push:
     branches:
       - test-send-to-slack
+      - amagaeru_dev
 
 jobs:
   ci:
@@ -33,5 +34,4 @@ jobs:
         env:
           SLACK_ID: ${{ secrets.SLACK_ID }}
           LINE_TOKEN: ${{ secrets.LINE_TOKEN }}
-
-
+          DISCORD_ID: ${{ secrets.DISCORD_ID }}
