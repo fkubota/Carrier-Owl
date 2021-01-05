@@ -98,9 +98,10 @@
         3. `config.yaml` 内の、`subject` を2で確認した文字列に変更します。
             - デフォルトでは`cat:cs.*`になっています。これは、cs以下の小分類すべてを通知するという設定になります。
             - **複数領域指定**
-                - 複数領域指定も可能です。以下のようにします。
-                    - ex1) cat:physics.space-ph OR cat:cs.ai
-                    - ex2) cat:physics.* OR cat:cs.ai
+                - 複数領域指定も可能です。以下のよう `OR` でつなぎます。
+                    - ex1) `cat:cs.AI OR cat:cs.CV`
+                    - ex2) `cat:physics.* OR cat:cs.*`
+                    - ex3) `cat:physics.space-ph OR cat:cs.AI OR cat:q-bio.BM`
 
 
 6. **キーワードの設定**
