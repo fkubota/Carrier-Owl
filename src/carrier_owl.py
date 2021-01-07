@@ -30,9 +30,9 @@ class Result:
 
 @dataclass
 class Address:
-    slack_id: str or None
-    line_token: str or None
-    discord_id: str or None
+    slack_id: str
+    line_token: str
+    discord_id: str
 
 
 def calc_score(abst: str, keywords: dict) -> (float, list):
@@ -198,9 +198,7 @@ def main():
     address = Address(slack_id=os.getenv("SLACK_ID") or args.slack_id,
                       line_token=os.getenv("LINE_TOKEN") or args.line_token,
                       discord_id=os.getenv("DISCORD_ID") or args.discord_id)
-    # slack_id = os.getenv("SLACK_ID") or args.slack_id
-    # line_token = os.getenv("LINE_TOKEN") or args.line_token
-    # discord_id = os.getenv("DISCORD_ID") or args.discord_id
+
     notify(results, address)
 
 
