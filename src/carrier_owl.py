@@ -197,8 +197,7 @@ def main():
 
     address = Address(slack_id=os.getenv("SLACK_ID") or args.slack_id,
                       line_token=os.getenv("LINE_TOKEN") or args.line_token,
-                      discord_id=os.getenv("DISCORD_ID") or args.discord_id
-                      )
+                      discord_id=os.getenv("DISCORD_ID") or args.discord_id)
 
     notify(results, address)
 
