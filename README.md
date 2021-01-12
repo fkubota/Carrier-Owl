@@ -6,9 +6,10 @@
 伝書フクロウという意味です。
 
 ## About Carrier Owl
+
 <img src='./data/images/system.png' width='1000'>
 
-前日のarxivから気になる論文にスコアを付けてslackに通知するシステムです。  
+2日前のarxivから気になる論文にスコアを付けてslackに通知するシステムです。  
 通知の際に、abstractをDeepLで翻訳しています。  
 **導入に必要なのはgithubアカウントだけです。10minぐらいで設定は終わります！！**  
 スコアは、ターゲットとなるキーワードに重み付けをして決まります。(例 resnet=5, kaggle=3, audio=3)    
@@ -35,56 +36,75 @@
 
 **step**
 1. **このリポジトリをフォークする**
-    
-2. **webhook urlの取得**
-    - 特定のslackチャンネルに流すための準備を行います。
-    - incomming webhookの**webhook url**を取得してください。
-        - 参考サイト
-            - [公式](https://slack.com/intl/ja-jp/help/articles/115005265063-Slack-での-Incoming-Webhook-の利用)
-            - [紹介記事](https://qiita.com/vmmhypervisor/items/18c99624a84df8b31008)
-    - slack通知の時のアイコンが設定できますので、よければこれ使ってください。
-        - [icon](https://github.com/fkubota/Carrier-Owl/blob/master/data/images/carrier-owl.png)
-            <img src='./data/images/carrier-owl.png' width='50'>
+
+2. **GitHub Actionsを有効化する**
+
+    - Actionsタブをクリックし、有効化します。
+
+        <img src='./data/images/09.png' width='600'>
 
 
+3. **通知先の設定**
+    通知したいアプリケーションに応じて設定を行います。いくつでも設定可能です。
 
-3. **webhook urlの設定**
-    - 2で取得した `webhook url` を設定します。
+    - Slackに通知する場合は[こちら](./docs/slack_setup.md)
+    - LINEに通知する場合は[こちら](./docs/line_setup.md)
+
+
+4. **webhook urlの設定**
+    - step3で取得した `webhook url`(または `line token`) を設定します。
     - 手順
 
         a. `settings` をクリック。
 
          <img src='./data/images/05.png' width='1000'>
         
-        b. `Secrets` をクリック。
+        b. `Secrets` をクリック。  
+
         c. `New repository secret` をクリック。
 
-        d. Nameを `SLACK_ID` と入力。Valueを **step2** で取得した`webhook url`を貼り付けます。
+        d. Nameを `SLACK_ID`(または `LINE_TOKEN` ) と入力。Valueを **step2** で取得した`webhook url`(また `line token`)を貼り付けます。
 
         <img src='./data/images/07.png' width='1000'>
         
         e. 最後に`Add secret`をクリックして登録完了です。
 
-4. **領域の設定**
+5. **領域の設定**
+
     - 通知させたいarxivの論文の領域を指定します。
     - **(computer scienceの人はこの手順を飛ばしてstep8に進んでも構いません)**
-    - `computer science` なら `cs` などそれぞれに名前がついています。以下の手順で確認します。
     - 手順
-        1. [arxiv.org](https://arxiv.org)にアクセス
-        2. 通知させたい領域の**resent**と書かれた部分をクリック。
+        1. 以下の表から通知を受け取りたいsubjectを選択して、urlをクリックしてください。
 
-            <img src='./data/images/02.png' width='400'>
-        
-        3. 遷移後のページのurlを見て、`list/`と`/recent`に囲われている文字列を使います。
+        | subject                                    | category | url                                       |
+        | ------------------------------------------ | -------- | ----------------------------------------- |
+        | Astrophysics                               | astro-ph | [url](https://arxiv.org/archive/astro-ph) |
+        | Condensed Matter                           | cond-mat | [url](https://arxiv.org/archive/cond-mat) |
+        | Physics                                    | physics  | [url](https://arxiv.org/archive/physics)  |
+        | Mathematics                                | math     | [url](https://arxiv.org/archive/math)     |
+        | Nonlinear Sciences                         | nlin     | [url](https://arxiv.org/archive/nlin)     |
+        | Computer Science                           | cs       | [url](https://arxiv.org/archive/cs)       |
+        | Quantitative Biology                       | q-bio    | [url](https://arxiv.org/archive/q-bio)    |
+        | Quantitative Finance                       | q-fin    | [url](https://arxiv.org/archive/q-fin)    |
+        | Statistics                                 | stat     | [url](https://arxiv.org/archive/stat)     |
+        | Electrical Engineering and Systems Science | eess     | [url](https://arxiv.org/archive/eess)     |
+        | Economics                                  | econ     | [url](https://arxiv.org/archive/econ)     |
 
-            - computer scienceの例: `https://arxiv.org/list/cs/recent`
-            - この場合、`cs` をこの後利用する。
-        
-        4. `config.yaml` 内の、`subject` を3で取得した文字列に変更します。(デフォルトでは`cs`になっています。)
+        2. さらに細かい分類を確認します
+            - 以下の例は、subject = `cs` をクリックした場合です。`cs.AI` や `cs.CL`　などが細かな分類になります。
+
+            <img src='./data/images/10.png' width='600'>
+
+        3. `config.yaml` 内の、`subject` を2で確認した文字列に変更します。
+            - デフォルトでは`cat:cs.*`になっています。これは、cs以下の小分類すべてを通知するという設定になります。
+            - **複数領域指定**
+                - 複数領域指定も可能です。以下のよう `OR` でつなぎます。
+                    - ex1) `cat:cs.AI OR cat:cs.CV`
+                    - ex2) `cat:physics.* OR cat:cs.*`
+                    - ex3) `cat:physics.space-ph OR cat:cs.AI OR cat:q-bio.BM`
 
 
-
-5. **キーワードの設定**
+6. **キーワードの設定**
     - `config.yaml` にキーワードとそのキーワードのスコアを設定します。
     - 例(音に関する論文を通知してほしい場合)
         ```
@@ -103,19 +123,28 @@
             <img src='./data/images/03.png' width='600'>
 
 
-6. **通知タイミングの調整**
+7. **通知タイミングの調整**
     - デフォルト設定では、日本時間の平日9時50分に通知されるようになっています。この設定で問題ない方はこれで設定完了です。
     - 通知タイミングのカスタマイズは、[こちら](https://github.com/fkubota/Carrier-Owl/blob/93e83a4ab7a67b127a3be2a2f1059dbed7dadbf0/.github/workflows/cron.yml#L6)を変更することで可能です。
 
-7. **push** 
+8. **push** 
     - ここまでの変更がmasterブランチに反映されていれば、これですべての設定が完了したことになります。次の通知タイミングでslackに通知されます。
 
-8. **test**
-    - 試しに動かしてみたい場合は、`master` ブランチから `test-send-to-slack` ブランチを作成してください。`test-send-to-slack` ブランチが作られるとgithub actionsが走って問題なければ通知されるはずです。
-    - Actionsタブで様子を確認できます。
+9. **test**
+    - github actions の `workflow_dispatch` を使って通知タイミングを待たずにいつでも実行することができます。
+    - Actionsタブでから、`Run workflow` をクリックすることでいつでも実行可能です。
 
-        <img src='./data/images/08.png' width='800'>
+        <img src='./data/images/11.png' width='800'>
+
+## その他の設定
+- **score threshold**
+    通知するスコアに閾値を設定することができます。`score >= scrore_threshold` を満たす論文のみ通知させることができま
+    す。 `config.yaml` 内の、`score_threshold` で設定できます(デフォルトは0になっています)。
 
 
 ## Thanks
-- [hppさん](https://github.com/hppRC)のお力をお借りして、v2.0.0から `github` だけで動作するようになりました。ご協力ありがとうございました。
+- [hppさん](https://github.com/hppRC)のPRにより、github actionsを使うことにより `github` だけで動作するようになりました。
+
+- [wakamezakeさん](https://github.com/wakamezake)のPRにより、arxiv-apiを導入しました。
+
+- [amagaeruさん](https://github.com/amagaeru1113)のPRにより、LINE通知機能を実装しました。
