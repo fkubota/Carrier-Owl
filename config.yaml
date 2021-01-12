@@ -7,3 +7,6 @@ keywords:
         metric learning: 3
         deep metric learning: 1
         graph : 1
+
+# 通知の閾値
+score_threshold: 0
