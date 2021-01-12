@@ -1,0 +1,9 @@
+# arxivの学問領域の指定
+subject: cat:cs.AI OR cat:cs.CV OR cat:stat.*
+
+# 検索キーワード
+keywords:
+        kaggle: 3
+        metric learning: 3
+        deep metric learning: 1
+        graph : 1
