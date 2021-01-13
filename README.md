@@ -148,3 +148,4 @@
 - [wakamezakeさん](https://github.com/wakamezake)のPRにより、arxiv-apiを導入しました。
 
 - [amagaeruさん](https://github.com/amagaeru1113)のPRにより、LINE通知機能を実装しました。
+
