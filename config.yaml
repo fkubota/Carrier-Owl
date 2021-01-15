@@ -11,6 +11,9 @@ keywords:
         tree: 1
         ensemble: 1
         gradient boosting : 1
+        multimodal: 1
+        multi-modal: 1
+
 
 # 通知の閾値
 score_threshold: 0
