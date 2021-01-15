@@ -7,6 +7,10 @@ keywords:
         metric learning: 3
         deep metric learning: 1
         graph : 1
+        distance: 1
+        tree: 1
+        ensemble: 1
+        gradient boosting : 1
 
 # 通知の閾値
 score_threshold: 0
