@@ -3,9 +3,12 @@ subject: 'cat:cs.*'
 
 # 検索キーワード
 keywords:
-        kaggle: 3
-        resnet: 3
-        anomaly detection: 1
+        transformer: 3
+        bert: 3
+        text style transfer: 2
+        generative: 2
+        disentangle: 1
+        adversarial: 1
 
 # 通知の閾値
 score_threshold: 0
