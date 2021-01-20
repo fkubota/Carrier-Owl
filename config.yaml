@@ -3,12 +3,15 @@ subject: 'cat:cs.*'
 
 # 検索キーワード
 keywords:
-        transformer: 3
-        bert: 3
+        transformer: 2
+        bert: 2
         text style transfer: 2
         generative: 2
         disentangle: 1
         adversarial: 1
+        nlp: 1
+        natural language: 1
+        nlu: 2
 
 # 通知の閾値
-score_threshold: 0
+score_threshold: 2
