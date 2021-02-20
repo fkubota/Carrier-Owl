@@ -1,11 +1,10 @@
 # slack id
-slack_id: 'your webhook url'
+slack_id: 'https://hooks.slack.com/services/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'
 
 # arxivの学問領域の指定
-subject: 'cs'
+subject: 'cs.CV'
 
 # 検索キーワード
 keywords:
-        kaggle: 3
-        resnet: 3
-        anomaly detection: 1
+        Transformer: 5
+        attention: 3
