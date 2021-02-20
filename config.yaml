@@ -1,10 +1,11 @@
 # slack id
-slack_id: 'https://hooks.slack.com/services/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'
+slack_id: 'https://hooks.slack.com/services/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'
 
 # arxivの学問領域の指定
-subject: 'cs.CV'
+subject: 'cs'
 
 # 検索キーワード
 keywords:
         Transformer: 5
         attention: 3
+        computer vision: 5
