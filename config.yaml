@@ -5,6 +5,9 @@ keywords:
         kaggle: 3
         resnet: 3
         anomaly detection: 1
+        domain shift: 1
+        transfer learning: 1
+        semi-supervised learning: 1
 
 # 通知の閾値
 score_threshold: 0
