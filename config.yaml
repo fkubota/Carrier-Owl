@@ -6,7 +6,7 @@ keywords:
         transformer: 1
         bert: 1
         text style transfer: 2
-        generative: 1
+        generative: 2
         disentangle: 1
         adversarial: 1
         nlp: 1
