@@ -3,11 +3,11 @@ subject: 'cat:cs.*'
 
 # 検索キーワード
 keywords:
-        transformer: 1
+        transformer: 2
         bert: 1
         text style transfer: 2
         generative: 2
-        disentangle: 1
+        disentangle: 2
         adversarial: 1
         nlp: 1
         natural language: 1
