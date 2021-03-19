@@ -3,7 +3,8 @@
 # Carrier Owl  
 
 <img src='./data/images/carrier-owl.png' width='50' text-align='center'>
-伝書フクロウという意味です。
+伝書フクロウという意味です。  
+不具合などがあればTwitterの[#carrier_owl](https://twitter.com/search?q=#carrier_owl&src=typed_query)で情報共有を行っています。
 
 ## About Carrier Owl
 
@@ -13,7 +14,7 @@
 通知の際に、abstractをDeepLで翻訳しています。  
 **導入に必要なのはgithubアカウントだけです。10minぐらいで設定は終わります！！**  
 スコアは、ターゲットとなるキーワードに重み付けをして決まります。(例 resnet=5, kaggle=3, audio=3)    
-ユーザーが**好きな領域**、**好きなキーワード**を登録することで、通知される論文は変わります。
+ユーザーが**好きな領域**、**好きなキーワード**を登録することで、通知される論文は変わります。  
 
 
 - 登録キーワード例
