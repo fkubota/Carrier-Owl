@@ -4,7 +4,7 @@
 
 <img src='./data/images/carrier-owl.png' width='50' text-align='center'>
 伝書フクロウという意味です。  
-不具合などがあればTwitterの[\#carrier_owl](https://twitter.com/search?q=#carrier_owl&src=typed_query)で情報共有を行っています。
+不具合などがあればTwitterの[`#carrier_owl`](https://twitter.com/search?q=#carrier_owl&src=typed_query)で情報共有を行っています。
 
 ## About Carrier Owl
 
