@@ -31,7 +31,6 @@ class Result:
 def calc_score(abst: str, keywords: dict) -> (float, list):
     sum_score = 0.0
     hit_kwd_list = []
-
     for word in keywords.keys():
         score = keywords[word]
         if word.lower() in abst.lower():
@@ -63,16 +62,11 @@ def search_keyword(
     return results
 
 
-def send2app(text: str, slack_id: str, line_token: str) -> None:
+def send2app(text: str, slack_id: str, line_token: str, discord_url: str) -> None:
     # slack
     if slack_id is not None:
-        #slack = slackweb.Slack(url=slack_id)
-        #slack.notify(text=text)
-        webhook_url  = 'https://discordapp.com/api/webhooks/849622363141832704/i16kP4MKPMpOFcNRVR4KTGNS1YcREBt6r_b8DX_pqhZ7JQ5bvpYFit8An8p823UszQMq'
-        main_content = {'content': text}
-        headers      = {'Content-Type': 'application/json'}
-
-        response     = requests.post(webhook_url, json.dumps(main_content), headers=headers)
+        slack = slackweb.Slack(url=slack_id)
+        slack.notify(text=text)
 
     # line
     if line_token is not None:
@@ -81,14 +75,21 @@ def send2app(text: str, slack_id: str, line_token: str) -> None:
         data = {'message': f'message: {text}'}
         requests.post(line_notify_api, headers=headers, data=data)
 
+    # discord
+    if discord_url is not None:
+        webhook_url  = discord_url
+        main_content = {'content': text}
+        headers      = {'Content-Type': 'application/json'}
+        requests.post(webhook_url, json.dumps(main_content), headers=headers)
 
-def notify(results: list, slack_id: str, line_token: str) -> None:
+
+def notify(results: list, slack_id: str, line_token: str, discord_url: str) -> None:
     # 通知
     star = '*'*80
     today = datetime.date.today()
     n_articles = len(results)
     text = f'{star}\n \t \t {today}\tnum of articles = {n_articles}\n{star}'
-    send2app(text, slack_id, line_token)
+    send2app(text, slack_id, line_token, discord_url)
     # descending
     for result in sorted(results, reverse=True, key=lambda x: x.score):
         url = result.url
@@ -96,7 +97,6 @@ def notify(results: list, slack_id: str, line_token: str) -> None:
         abstract = result.abstract
         word = result.words
         score = result.score
-
         text = f'\n score: `{score}`'\
                f'\n hit keywords: `{word}`'\
                f'\n url: {url}'\
@@ -105,38 +105,31 @@ def notify(results: list, slack_id: str, line_token: str) -> None:
                f'\n \t {abstract}'\
                f'\n {star}'
 
-        send2app(text, slack_id, line_token)
+        send2app(text, slack_id, line_token,discord_url)
 
 
 def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
     '''
     https://qiita.com/fujino-fpu/items/e94d4ff9e7a5784b2987
     '''
-
     sleep_time = 1
-
     # urlencode
     from_text = urllib.parse.quote(from_text)
-
     # url作成
     url = 'https://www.deepl.com/translator#' \
         + from_lang + '/' + to_lang + '/' + from_text
-
     # ヘッドレスモードでブラウザを起動
     options = Options()
     options.add_argument('--headless')
-
     # ブラウザーを起動
     driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
     driver.get(url)
     driver.implicitly_wait(10)  # 見つからないときは、10秒まで待つ
-
     for i in range(30):
         # 指定時間待つ
         time.sleep(sleep_time)
         html = driver.page_source
         to_text = get_text_from_page_source(html)
-
         if to_text:
             break
 
@@ -166,6 +159,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--slack_id', default=None)
     parser.add_argument('--line_token', default=None)
+    parser.add_argument('--discord_url',default=None)
     args = parser.parse_args()
 
     config = get_config()
@@ -187,7 +181,8 @@ def main():
 
     slack_id = os.getenv("SLACK_ID") or args.slack_id
     line_token = os.getenv("LINE_TOKEN") or args.line_token
-    notify(results, slack_id, line_token)
+    discord_url = os.getenv("DISCORD_URL") or args.discord_url
+    notify(results, slack_id, line_token,discord_url)
 
 
 if __name__ == "__main__":
