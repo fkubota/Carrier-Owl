@@ -14,6 +14,7 @@ import urllib.parse
 from dataclasses import dataclass
 import arxiv
 import requests
+import json
 # setting
 warnings.filterwarnings('ignore')
 
@@ -65,8 +66,13 @@ def search_keyword(
 def send2app(text: str, slack_id: str, line_token: str) -> None:
     # slack
     if slack_id is not None:
-        slack = slackweb.Slack(url=slack_id)
-        slack.notify(text=text)
+        #slack = slackweb.Slack(url=slack_id)
+        #slack.notify(text=text)
+        webhook_url  = 'https://discordapp.com/api/webhooks/849622363141832704/i16kP4MKPMpOFcNRVR4KTGNS1YcREBt6r_b8DX_pqhZ7JQ5bvpYFit8An8p823UszQMq'
+        main_content = {'content': text}
+        headers      = {'Content-Type': 'application/json'}
+
+        response     = requests.post(webhook_url, json.dumps(main_content), headers=headers)
 
     # line
     if line_token is not None:
