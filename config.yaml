@@ -14,9 +14,6 @@ keywords:
         fine tuning: 1
         fine-tuning: 1
         pre-training: 1
-        QA : 1
-        summarization: 1
-        question answering: 1
         calibration: 1
 
 # 通知の閾値
