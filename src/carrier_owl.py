@@ -1,19 +1,21 @@
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-import os
-import time
-import yaml
-import datetime
-import slackweb
 import argparse
+import datetime
+import os
 import textwrap
-from bs4 import BeautifulSoup
-import warnings
+import time
 import urllib.parse
+import warnings
 from dataclasses import dataclass
+
 import arxiv
 import requests
+import slackweb
+import yaml
+from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
+
 # setting
 warnings.filterwarnings('ignore')
 
@@ -41,7 +43,7 @@ def calc_score(abst: str, keywords: dict) -> (float, list):
 
 def search_keyword(
         articles: list, keywords: dict, score_threshold: float
-        ) -> list:
+        ):
     results = []
 
     for article in articles:
@@ -62,11 +64,12 @@ def search_keyword(
     return results
 
 
-def send2app(text: str, slack_id: str, line_token: str) -> None:
+def send2app(text: str, slack_ids: list, line_token: str) :
     # slack
-    if slack_id is not None:
-        slack = slackweb.Slack(url=slack_id)
-        slack.notify(text=text)
+    if slack_ids is not None:
+        for slack id in slack_ids:
+            slack = slackweb.Slack(url=slack_id)
+            slack.notify(text=text)
 
     # line
     if line_token is not None:
@@ -76,7 +79,7 @@ def send2app(text: str, slack_id: str, line_token: str) -> None:
         requests.post(line_notify_api, headers=headers, data=data)
 
 
-def notify(results: list, slack_id: str, line_token: str) -> None:
+def notify(results: list, slack_id: str, line_token: str):
     # 通知
     star = '*'*80
     today = datetime.date.today()
@@ -102,7 +105,7 @@ def notify(results: list, slack_id: str, line_token: str) -> None:
         send2app(text, slack_id, line_token)
 
 
-def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
+def get_translated_text(from_lang: str, to_lang: str, from_text: str):
     '''
     https://qiita.com/fujino-fpu/items/e94d4ff9e7a5784b2987
     '''
@@ -138,15 +141,13 @@ def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
     driver.quit()
     return to_text
 
-
-def get_text_from_page_source(html: str) -> str:
+def get_text_from_page_source(html: str):
     soup = BeautifulSoup(html, features='lxml')
     target_elem = soup.find(class_="lmt__translations_as_text__text_btn")
     text = target_elem.text
     return text
 
-
-def get_config() -> dict:
+def get_config():
     file_abs_path = os.path.abspath(__file__)
     file_dir = os.path.dirname(file_abs_path)
     config_path = f'{file_dir}/../config.yaml'
@@ -159,6 +160,7 @@ def main():
     # debug用
     parser = argparse.ArgumentParser()
     parser.add_argument('--slack_id', default=None)
+    parser.add_argument('--slack_id1', default=None)
     parser.add_argument('--line_token', default=None)
     args = parser.parse_args()
 
@@ -180,8 +182,10 @@ def main():
     results = search_keyword(articles, keywords, score_threshold)
 
     slack_id = os.getenv("SLACK_ID") or args.slack_id
+    slack_id1 = os.getenv("SLACK_ID1") or args.slack_id
+    slack_ids = [slack_id, slack_id1]
     line_token = os.getenv("LINE_TOKEN") or args.line_token
-    notify(results, slack_id, line_token)
+    notify(results, slack_ids, line_token)
 
 
 if __name__ == "__main__":

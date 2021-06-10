@@ -16,6 +16,10 @@ webdriver-manager = "^3.3.0"
 arxiv = "^0.5.3"
 
 [tool.poetry.dev-dependencies]
+flake8 = "^3.9.2"
+black = "^21.5b2"
+isort = "^5.8.0"
+mypy = "^0.901"
 
 [build-system]
 requires = ["poetry>=0.12"]
