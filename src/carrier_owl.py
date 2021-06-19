@@ -22,7 +22,9 @@ warnings.filterwarnings('ignore')
 class Result:
     url: str
     title: str
+    en_title: str
     abstract: str
+    en_abstract: str
     words: list
     score: float = 0.0
 
@@ -49,14 +51,14 @@ def search_keyword(
         title = article['title']
         abstract = article['summary']
         score, hit_keywords = calc_score(abstract, keywords)
-        if (score != 0) and (score >= score_threshold):
+        if score >= score_threshold:
             title_trans = get_translated_text('ja', 'en', title)
             abstract = abstract.replace('\n', '')
             abstract_trans = get_translated_text('ja', 'en', abstract)
             abstract_trans = textwrap.wrap(abstract_trans, 40)  # 40行で改行
             abstract_trans = '\n'.join(abstract_trans)
             result = Result(
-                    url=url, title=title_trans, abstract=abstract_trans,
+                    url=url, title=title_trans, en_title=title, abstract=abstract_trans, en_abstract=abstract,
                     score=score, words=hit_keywords)
             results.append(result)
     return results
@@ -87,7 +89,9 @@ def notify(results: list, slack_id: str, line_token: str) -> None:
     for result in sorted(results, reverse=True, key=lambda x: x.score):
         url = result.url
         title = result.title
+        en_title = result.en_title
         abstract = result.abstract
+        en_abstract = result.en_abstract
         word = result.words
         score = result.score
 
@@ -95,8 +99,11 @@ def notify(results: list, slack_id: str, line_token: str) -> None:
                f'\n hit keywords: `{word}`'\
                f'\n url: {url}'\
                f'\n title:    {title}'\
+               f'\n English title:    {en_title}'\
                f'\n abstract:'\
                f'\n \t {abstract}'\
+               f'\n English abstract:'\
+               f'\n \t {en_abstract}'\
                f'\n {star}'
 
         send2app(text, slack_id, line_token)
