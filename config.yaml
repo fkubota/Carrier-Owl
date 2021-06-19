@@ -2,16 +2,14 @@
 channels:
         ASTROPH_GA:
                 subject: 'cat:astro-ph.GA'
-                keywords: 
+                keywords:
+                        galaxy: 1
 #         ASTROPH_CO: 'cat:astro-ph.CO'
 #         ASTROPH_EP: 'cat:astro-ph.EP'
 #         ASTROPH_HE: 'cat:astro-ph.HE'
 #         ASTROPH_IM: 'cat:astro-ph.IM'
 #         ASTROPH_SR: 'cat:astro-ph.SR'
         
-
-# 検索キーワード
-keywords:
         
         
 # 通知の閾値
