@@ -33,6 +33,11 @@ jobs:
         env:
           SLACK_ID: ${{ secrets.SLACK_ID }}
           SLACK_ID_ASTROPH_GA: ${{ secrets.SLACK_ID_ASTROPH_GA }}
+          SLACK_ID_ASTROPH_CO: ${{ secrets.SLACK_ID_ASTROPH_CO }}
+          SLACK_ID_ASTROPH_HE: ${{ secrets.SLACK_ID_ASTROPH_HE }}
+          SLACK_ID_ASTROPH_EP: ${{ secrets.SLACK_ID_ASTROPH_EP }}
+          SLACK_ID_ASTROPH_IM: ${{ secrets.SLACK_ID_ASTROPH_IM }}
+          SLACK_ID_ASTROPH_SR: ${{ secrets.SLACK_ID_ASTROPH_SR }}
           LINE_TOKEN: ${{ secrets.LINE_TOKEN }}
 
 
