@@ -1,14 +1,16 @@
-# arxivの学問領域の指定
-subject: 'cat:astro-ph.GA'
+# slackチャンネル及びarxiv学問領域の指定
+channels:
+        - astro-ph_GA: 'cat:astro-ph.GA'
+        - astro-ph_CO: 'cat:astro-ph.CO'
+        - astro-ph_EP: 'cat:astro-ph.EP'
+        - astro-ph_HE: 'cat:astro-ph.HE'
+        - astro-ph_IM: 'cat:astro-ph.IM'
+        - astro-ph_SR: 'cat:astro-ph.SR'
+        
 
 # 検索キーワード
 keywords:
-        galaxy: 1
-        high-z: 1
-        cluster: 3
-        protocluster: 3
-        void: 3
-        overdensity: 3
-        underdensity: 3
+        
+        
 # 通知の閾値
 score_threshold: 0
