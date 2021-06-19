@@ -51,7 +51,7 @@ def search_keyword(
         title = article['title']
         abstract = article['summary']
         score, hit_keywords = calc_score(abstract, keywords)
-        if score >= score_threshold:
+        if score >= score_threshold+1:
             title_trans = get_translated_text('ja', 'en', title)
             abstract = abstract.replace('\n', '')
             abstract_trans = get_translated_text('ja', 'en', abstract)
@@ -187,7 +187,8 @@ def main():
                                iterative=False)
         results = search_keyword(articles, keywords, score_threshold)
 
-        slack_id = os.getenv("SLACK_ID_"+channel_name) or args.slack_id
+#         slack_id = os.getenv("SLACK_ID_"+channel_name) or args.slack_id
+        slack_id = os.getenv("SLACK_ID") or args.slack_id
         line_token = os.getenv("LINE_TOKEN") or args.line_token
         notify(results, slack_id, line_token)
 
