@@ -186,7 +186,10 @@ def main():
                                sort_by='submittedDate',
                                iterative=False)
         results = search_keyword(articles, keywords, score_threshold)
-
+        # debug
+        for key, val in os.environ.items():
+            print('{}: {}'.format(key, val))
+           
         slack_id = os.getenv("SLACK_ID_"+channel_name)
 #         slack_id = os.getenv("SLACK_ID") or args.slack_id
         print("SLACK_ID_"+channel_name, slack_id)
