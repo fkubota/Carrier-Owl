@@ -4,12 +4,26 @@ channels:
                 subject: 'cat:astro-ph.GA'
                 keywords:
                         galaxy: 1
-#         ASTROPH_CO: 'cat:astro-ph.CO'
-#         ASTROPH_EP: 'cat:astro-ph.EP'
-#         ASTROPH_HE: 'cat:astro-ph.HE'
-#         ASTROPH_IM: 'cat:astro-ph.IM'
-#         ASTROPH_SR: 'cat:astro-ph.SR'
-        
+        ASTROPH_CO: 
+                subject: 'cat:astro-ph.CO'
+                keywords:
+                        cosmology: 1
+        ASTROPH_EP: 
+                subject: 'cat:astro-ph.EP'
+                keywords:
+                        planet: 1
+        ASTROPH_HE: 
+                subject: 'cat:astro-ph.HE'
+                keywords:
+                        high energy: 1
+        ASTROPH_IM: 
+                subject: 'cat:astro-ph.IM'
+                keywords:
+                        instrumentation: 1
+        ASTROPH_SR: 
+                subject: 'cat:astro-ph.SR'
+                keywords:
+                        solar: 1
         
         
 # 通知の閾値
