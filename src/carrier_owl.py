@@ -187,7 +187,7 @@ def main():
                                iterative=False)
         results = search_keyword(articles, keywords, score_threshold)
 
-        slack_id = os.getenv("SLACK_ID_"+channel_name) or args.slack_id
+        slack_id = os.getenv("SLACK_ID_"+channel_name)
 #         slack_id = os.getenv("SLACK_ID") or args.slack_id
         print("SLACK_ID_"+channel_name, slack_id)
         line_token = os.getenv("LINE_TOKEN") or args.line_token
