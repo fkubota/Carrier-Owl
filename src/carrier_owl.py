@@ -55,7 +55,7 @@ def search_keyword(
             title_trans = get_translated_text('ja', 'en', title)
             abstract = abstract.replace('\n', '')
             abstract_trans = get_translated_text('ja', 'en', abstract)
-            abstract_trans = textwrap.wrap(abstract_trans, 40)  # 40行で改行
+#             abstract_trans = textwrap.wrap(abstract_trans, 40)  # 40行で改行
             abstract_trans = '\n'.join(abstract_trans)
             result = Result(
                     url=url, title=title_trans, en_title=title, abstract=abstract_trans, en_abstract=abstract,
@@ -95,9 +95,7 @@ def notify(results: list, slack_id: str, line_token: str) -> None:
         word = result.words
         score = result.score
 
-        text = f'\n score: `{score}`'\
-               f'\n hit keywords: `{word}`'\
-               f'\n url: {url}'\
+        text = f'\n url: {url}'\
                f'\n title:    {title}'\
                f'\n English title:    {en_title}'\
                f'\n abstract:'\
@@ -170,25 +168,27 @@ def main():
     args = parser.parse_args()
 
     config = get_config()
-    subject = config['subject']
+    channels = config['channels']
     keywords = config['keywords']
     score_threshold = float(config['score_threshold'])
 
     day_before_yesterday = datetime.datetime.today() - datetime.timedelta(days=2)
     day_before_yesterday_str = day_before_yesterday.strftime('%Y%m%d')
-    # datetime format YYYYMMDDHHMMSS
-    arxiv_query = f'({subject}) AND ' \
-                  f'submittedDate:' \
-                  f'[{day_before_yesterday_str}000000 TO {day_before_yesterday_str}235959]'
-    articles = arxiv.query(query=arxiv_query,
-                           max_results=1000,
-                           sort_by='submittedDate',
-                           iterative=False)
-    results = search_keyword(articles, keywords, score_threshold)
+    
+    for channel_name, channel_subject in channels:
+        # datetime format YYYYMMDDHHMMSS
+        arxiv_query = f'({channel_subject}) AND ' \
+                      f'submittedDate:' \
+                      f'[{day_before_yesterday_str}000000 TO {day_before_yesterday_str}235959]'
+        articles = arxiv.query(query=arxiv_query,
+                               max_results=1000,
+                               sort_by='submittedDate',
+                               iterative=False)
+        results = search_keyword(articles, keywords, score_threshold)
 
-    slack_id = os.getenv("SLACK_ID") or args.slack_id
-    line_token = os.getenv("LINE_TOKEN") or args.line_token
-    notify(results, slack_id, line_token)
+        slack_id = os.getenv("SLACK_ID_"+channel_name) or args.slack_id
+        line_token = os.getenv("LINE_TOKEN") or args.line_token
+        notify(results, slack_id, line_token)
 
 
 if __name__ == "__main__":
