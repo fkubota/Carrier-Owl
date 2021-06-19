@@ -169,15 +169,16 @@ def main():
 
     config = get_config()
     channels = config['channels']
-    keywords = config['keywords']
     score_threshold = float(config['score_threshold'])
 
     day_before_yesterday = datetime.datetime.today() - datetime.timedelta(days=2)
     day_before_yesterday_str = day_before_yesterday.strftime('%Y%m%d')
     
-    for channel_name, channel_subject in channels:
+    for channel_name, channel_config in channels.items():
+        subject = channel_config['subject']
+        keywords = channel_config['keywords']
         # datetime format YYYYMMDDHHMMSS
-        arxiv_query = f'({channel_subject}) AND ' \
+        arxiv_query = f'({subject}) AND ' \
                       f'submittedDate:' \
                       f'[{day_before_yesterday_str}000000 TO {day_before_yesterday_str}235959]'
         articles = arxiv.query(query=arxiv_query,
