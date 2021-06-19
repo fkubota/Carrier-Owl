@@ -1,11 +1,11 @@
 # slackチャンネル及びarxiv学問領域の指定
 channels:
-        - astro-ph_ga: 'cat:astro-ph.GA'
-#         - astro-ph_co: 'cat:astro-ph.CO'
-#         - astro-ph_ep: 'cat:astro-ph.EP'
-#         - astro-ph_he: 'cat:astro-ph.HE'
-#         - astro-ph_im: 'cat:astro-ph.IM'
-#         - astro-ph_sr: 'cat:astro-ph.SR'
+        - ASTROPH_GA: 'cat:astro-ph.GA'
+#         - ASTROPH_CO: 'cat:astro-ph.CO'
+#         - ASTROPH_EP: 'cat:astro-ph.EP'
+#         - ASTROPH_HE: 'cat:astro-ph.HE'
+#         - ASTROPH_IM: 'cat:astro-ph.IM'
+#         - ASTROPH_SR: 'cat:astro-ph.SR'
         
 
 # 検索キーワード
