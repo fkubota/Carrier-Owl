@@ -82,7 +82,7 @@ def notify(results: list, slack_id: str, line_token: str) -> None:
     # 通知
     star = '*'*80
     
-    today = datetime.datetime.today()
+    today = datetime.datetime.today() - datetime.timedelta(days=2)
     deadline = today - datetime.timedelta(days=1)
     previous_deadline = today - datetime.timedelta(days=2)
     if today.weekday()==1:  # announce data is Monday
@@ -183,7 +183,7 @@ def main():
     channels = config['channels']
     score_threshold = float(config['score_threshold'])
     
-    today = datetime.datetime.today()
+    today = datetime.datetime.today() - datetime.timedelta(days=2)
     deadline = today - datetime.timedelta(days=1)
     previous_deadline = today - datetime.timedelta(days=2)
     if today.weekday()==1:  # announce data is Monday
