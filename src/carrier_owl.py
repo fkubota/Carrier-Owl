@@ -82,10 +82,10 @@ def notify(results: list, slack_id: str, line_token: str) -> None:
     # 通知
     star = '*'*80
     today = datetime.date.today()
-    yesterday = datetime.datetime.today() - datetime.timedelta(days=1)
-    day_before_yesterday = datetime.datetime.today() - datetime.timedelta(days=2)
-    yesterday_str = yesterday.strftime('%Y%m%d')
-    day_before_yesterday_str = day_before_yesterday.strftime('%Y%m%d')
+    yesterday = datetime.datetime.today() - datetime.timedelta(days=2)
+    day_before_yesterday = datetime.datetime.today() - datetime.timedelta(days=3)
+    yesterday_str = yesterday.strftime('%Y/%m/%d')
+    day_before_yesterday_str = day_before_yesterday.strftime('%Y/%m/%d')
     day_range = f'{day_before_yesterday_str} 18:00:00 TO {yesterday_str} 18:00:00 UTC'
     n_articles = len(results)
     text = f'{star}\n \t \t {day_range}\tnum of articles = {n_articles}\n{star}'
@@ -176,8 +176,8 @@ def main():
     channels = config['channels']
     score_threshold = float(config['score_threshold'])
 
-    yesterday = datetime.datetime.today() - datetime.timedelta(days=1)
-    day_before_yesterday = datetime.datetime.today() - datetime.timedelta(days=2)
+    yesterday = datetime.datetime.today() - datetime.timedelta(days=2)
+    day_before_yesterday = datetime.datetime.today() - datetime.timedelta(days=3)
     yesterday_str = yesterday.strftime('%Y%m%d')
     day_before_yesterday_str = day_before_yesterday.strftime('%Y%m%d')
     
@@ -187,7 +187,7 @@ def main():
         # datetime format YYYYMMDDHHMMSS
         arxiv_query = f'({subject}) AND ' \
                       f'submittedDate:' \
-                      f'[{day_before_yesterday_str}180000 TO {yesterday_str}180000]'
+                      f'[{day_before_yesterday_str}180000 TO {yesterday_str}175959]'
         articles = arxiv.query(query=arxiv_query,
                                max_results=1000,
                                sort_by='submittedDate',
