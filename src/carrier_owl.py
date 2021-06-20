@@ -52,8 +52,9 @@ def search_keyword(
         abstract = article['summary']
         score, hit_keywords = calc_score(abstract, keywords)
         if score >= score_threshold:
+            title = title.replace('\n', ' ')
             title_trans = get_translated_text('ja', 'en', title)
-            abstract = abstract.replace('\n', '')
+            abstract = abstract.replace('\n', ' ')
             abstract_trans = get_translated_text('ja', 'en', abstract)
 #             abstract_trans = textwrap.wrap(abstract_trans, 40)  # 40行で改行
 #             abstract_trans = '\n'.join(abstract_trans)
@@ -82,7 +83,7 @@ def notify(results: list, slack_id: str, line_token: str) -> None:
     # 通知
     star = '*'*80
     
-    today = datetime.datetime.today() - datetime.timedelta(days=2)
+    today = datetime.datetime.today()
     deadline = today - datetime.timedelta(days=1)
     previous_deadline = today - datetime.timedelta(days=2)
     if today.weekday()==1:  # announce data is Monday
@@ -183,7 +184,7 @@ def main():
     channels = config['channels']
     score_threshold = float(config['score_threshold'])
     
-    today = datetime.datetime.today() - datetime.timedelta(days=2)
+    today = datetime.datetime.today()
     deadline = today - datetime.timedelta(days=1)
     previous_deadline = today - datetime.timedelta(days=2)
     if today.weekday()==1:  # announce data is Monday
@@ -210,11 +211,11 @@ def main():
 #         for key, val in os.environ.items():
 #             print('{}: {}'.format(key, val))
            
-#         slack_id = os.getenv("SLACK_ID_"+channel_name)
-        slack_id = os.getenv("SLACK_ID") or args.slack_id
+        slack_id = os.getenv("SLACK_ID_"+channel_name)
+#         slack_id = os.getenv("SLACK_ID") or args.slack_id
         line_token = os.getenv("LINE_TOKEN") or args.line_token
         notify(results, slack_id, line_token)
-        break
+#         break
 
 
 if __name__ == "__main__":
