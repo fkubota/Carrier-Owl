@@ -82,8 +82,13 @@ def notify(results: list, slack_id: str, line_token: str) -> None:
     # 通知
     star = '*'*80
     today = datetime.date.today()
+    yesterday = datetime.datetime.today() - datetime.timedelta(days=1)
+    day_before_yesterday = datetime.datetime.today() - datetime.timedelta(days=2)
+    yesterday_str = yesterday.strftime('%Y%m%d')
+    day_before_yesterday_str = day_before_yesterday.strftime('%Y%m%d')
+    day_range = f'{day_before_yesterday_str} 18:00:00 TO {yesterday_str} 18:00:00 UTC'
     n_articles = len(results)
-    text = f'{star}\n \t \t {today}\tnum of articles = {n_articles}\n{star}'
+    text = f'{star}\n \t \t {day_range}\tnum of articles = {n_articles}\n{star}'
     send2app(text, slack_id, line_token)
     # descending
     for result in sorted(results, reverse=True, key=lambda x: x.score):
@@ -171,7 +176,9 @@ def main():
     channels = config['channels']
     score_threshold = float(config['score_threshold'])
 
+    yesterday = datetime.datetime.today() - datetime.timedelta(days=1)
     day_before_yesterday = datetime.datetime.today() - datetime.timedelta(days=2)
+    yesterday_str = yesterday.strftime('%Y%m%d')
     day_before_yesterday_str = day_before_yesterday.strftime('%Y%m%d')
     
     for channel_name, channel_config in channels.items():
@@ -180,7 +187,7 @@ def main():
         # datetime format YYYYMMDDHHMMSS
         arxiv_query = f'({subject}) AND ' \
                       f'submittedDate:' \
-                      f'[{day_before_yesterday_str}000000 TO {day_before_yesterday_str}235959]'
+                      f'[{day_before_yesterday_str}180000 TO {yesterday_str}180000]'
         articles = arxiv.query(query=arxiv_query,
                                max_results=1000,
                                sort_by='submittedDate',
@@ -190,10 +197,11 @@ def main():
 #         for key, val in os.environ.items():
 #             print('{}: {}'.format(key, val))
            
-        slack_id = os.getenv("SLACK_ID_"+channel_name)
-#         slack_id = os.getenv("SLACK_ID") or args.slack_id
+#         slack_id = os.getenv("SLACK_ID_"+channel_name)
+        slack_id = os.getenv("SLACK_ID") or args.slack_id
         line_token = os.getenv("LINE_TOKEN") or args.line_token
         notify(results, slack_id, line_token)
+        break
 
 
 if __name__ == "__main__":
