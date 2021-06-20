@@ -81,12 +81,19 @@ def send2app(text: str, slack_id: str, line_token: str) -> None:
 def notify(results: list, slack_id: str, line_token: str) -> None:
     # 通知
     star = '*'*80
-    today = datetime.date.today()
-    yesterday = datetime.datetime.today() - datetime.timedelta(days=2)
-    day_before_yesterday = datetime.datetime.today() - datetime.timedelta(days=3)
-    yesterday_str = yesterday.strftime('%Y/%m/%d')
-    day_before_yesterday_str = day_before_yesterday.strftime('%Y/%m/%d')
-    day_range = f'{day_before_yesterday_str} 18:00:00 TO {yesterday_str} 18:00:00 UTC'
+    
+    today = datetime.datetime.today()
+    deadline = today - datetime.timedelta(days=1)
+    previous_deadline = today - datetime.timedelta(days=2)
+    if today.weekday()==1:  # announce data is Monday
+        deadline = deadline - datetime.timedelta(days=2)
+        previous_deadline = previous_deadline - datetime.timedelta(days=2)
+    if today.weekday()==2:  # announce data is Tuesday
+        previous_deadline = previous_deadline - datetime.timedelta(days=2)
+    deadline_str = deadline.strftime('%Y%m%d')
+    previous_deadline_str = previous_deadline.strftime('%Y%m%d')
+    day_range = f'{previous_deadline_str} 18:00:00 〜 {deadline_str} 18:00:00 UTC'
+    
     n_articles = len(results)
     text = f'{star}\n \t \t {day_range}\tnum of articles = {n_articles}\n{star}'
     send2app(text, slack_id, line_token)
@@ -175,11 +182,17 @@ def main():
     config = get_config()
     channels = config['channels']
     score_threshold = float(config['score_threshold'])
-
-    yesterday = datetime.datetime.today() - datetime.timedelta(days=2)
-    day_before_yesterday = datetime.datetime.today() - datetime.timedelta(days=3)
-    yesterday_str = yesterday.strftime('%Y%m%d')
-    day_before_yesterday_str = day_before_yesterday.strftime('%Y%m%d')
+    
+    today = datetime.datetime.today()
+    deadline = today - datetime.timedelta(days=1)
+    previous_deadline = today - datetime.timedelta(days=2)
+    if today.weekday()==1:  # announce data is Monday
+        deadline = deadline - datetime.timedelta(days=2)
+        previous_deadline = previous_deadline - datetime.timedelta(days=2)
+    if today.weekday()==2:  # announce data is Tuesday
+        previous_deadline = previous_deadline - datetime.timedelta(days=2)
+    deadline_str = deadline.strftime('%Y%m%d')
+    previous_deadline_str = previous_deadline.strftime('%Y%m%d')
     
     for channel_name, channel_config in channels.items():
         subject = channel_config['subject']
@@ -187,7 +200,7 @@ def main():
         # datetime format YYYYMMDDHHMMSS
         arxiv_query = f'({subject}) AND ' \
                       f'submittedDate:' \
-                      f'[{day_before_yesterday_str}180000 TO {yesterday_str}175959]'
+                      f'[{previous_deadline_str}180000 TO {deadline_str}175959]'
         articles = arxiv.query(query=arxiv_query,
                                max_results=1000,
                                sort_by='submittedDate',
