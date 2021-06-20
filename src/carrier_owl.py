@@ -91,8 +91,8 @@ def notify(results: list, slack_id: str, line_token: str) -> None:
         previous_deadline = previous_deadline - datetime.timedelta(days=2)
     if today.weekday()==2:  # announce data is Tuesday
         previous_deadline = previous_deadline - datetime.timedelta(days=2)
-    deadline_str = deadline.strftime('%Y%m%d')
-    previous_deadline_str = previous_deadline.strftime('%Y%m%d')
+    deadline_str = deadline.strftime('%Y/%m/%d')
+    previous_deadline_str = previous_deadline.strftime('%Y/%m/%d')
     day_range = f'{previous_deadline_str} 18:00:00 〜 {deadline_str} 18:00:00 UTC'
     
     n_articles = len(results)
