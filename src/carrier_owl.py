@@ -86,10 +86,10 @@ def notify(results: list, slack_id: str, line_token: str) -> None:
     today = datetime.datetime.today()
     deadline = today - datetime.timedelta(days=1)
     previous_deadline = today - datetime.timedelta(days=2)
-    if today.weekday()==1:  # announce data is Monday
+    if today.weekday()==0:  # announce data is Monday
         deadline = deadline - datetime.timedelta(days=2)
         previous_deadline = previous_deadline - datetime.timedelta(days=2)
-    if today.weekday()==2:  # announce data is Tuesday
+    if today.weekday()==1:  # announce data is Tuesday
         previous_deadline = previous_deadline - datetime.timedelta(days=2)
     deadline_str = deadline.strftime('%Y/%m/%d')
     previous_deadline_str = previous_deadline.strftime('%Y/%m/%d')
@@ -187,11 +187,10 @@ def main():
     today = datetime.datetime.today()
     deadline = today - datetime.timedelta(days=1)
     previous_deadline = today - datetime.timedelta(days=2)
-    print(today.weekday())
-    if today.weekday()==1:  # announce data is Monday
+    if today.weekday()==0:  # announce data is Monday
         deadline = deadline - datetime.timedelta(days=2)
         previous_deadline = previous_deadline - datetime.timedelta(days=2)
-    if today.weekday()==2:  # announce data is Tuesday
+    if today.weekday()==1:  # announce data is Tuesday
         previous_deadline = previous_deadline - datetime.timedelta(days=2)
     deadline_str = deadline.strftime('%Y%m%d')
     previous_deadline_str = previous_deadline.strftime('%Y%m%d')
