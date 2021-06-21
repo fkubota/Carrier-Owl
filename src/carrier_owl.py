@@ -187,6 +187,7 @@ def main():
     today = datetime.datetime.today()
     deadline = today - datetime.timedelta(days=1)
     previous_deadline = today - datetime.timedelta(days=2)
+    print(today.weekday())
     if today.weekday()==1:  # announce data is Monday
         deadline = deadline - datetime.timedelta(days=2)
         previous_deadline = previous_deadline - datetime.timedelta(days=2)
