@@ -1,13 +1,13 @@
 # slackチャンネル及びarxiv学問領域の指定
 channels:
-#         ASTROPH_GA:
-#                 subject: 'cat:astro-ph.GA'
-#                 keywords:
-#                         hoge: 1
-#         ASTROPH_CO: 
-#                 subject: 'cat:astro-ph.CO'
-#                 keywords:
-#                         hoge: 1
+        ASTROPH_GA:
+                subject: 'cat:astro-ph.GA'
+                keywords:
+                        hoge: 1
+        ASTROPH_CO: 
+                subject: 'cat:astro-ph.CO'
+                keywords:
+                        hoge: 1
         ASTROPH_EP: 
                 subject: 'cat:astro-ph.EP'
                 keywords:
