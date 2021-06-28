@@ -128,7 +128,7 @@ def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
     sleep_time = 1
 
     # urlencode
-    from_text = urllib.parse.quote(from_text)
+    from_text = urllib.parse.quote(from_text, safe='')
 
     # url作成
     url = 'https://www.deepl.com/translator#' \
