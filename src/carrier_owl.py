@@ -218,11 +218,11 @@ def main():
 #         for key, val in os.environ.items():
 #             print('{}: {}'.format(key, val))
            
-#         slack_id = os.getenv("SLACK_ID_"+channel_name)
-        slack_id = os.getenv("SLACK_ID") or args.slack_id
+        slack_id = os.getenv("SLACK_ID_"+channel_name)
+#         slack_id = os.getenv("SLACK_ID") or args.slack_id
         line_token = os.getenv("LINE_TOKEN") or args.line_token
         notify(results, slack_id, line_token)
-        break
+#         break
 
 
 if __name__ == "__main__":
