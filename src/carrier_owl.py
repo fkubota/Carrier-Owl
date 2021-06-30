@@ -144,7 +144,7 @@ def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
     driver.get(url)
     driver.implicitly_wait(10)  # 見つからないときは、10秒まで待つ
 
-    for i in range(30):
+    for i in range(50):
         # 指定時間待つ
         time.sleep(sleep_time)
         html = driver.page_source
@@ -152,6 +152,8 @@ def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
 
         if to_text:
             break
+    if to_text is None:
+        to_text = 'Sorry, I timed out...>_<'
 
     # ブラウザ停止
     driver.quit()
