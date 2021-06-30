@@ -109,7 +109,8 @@ def notify(results: list, slack_id: str, line_token: str) -> None:
         score = result.score
         
         title = title.replace('$', '\$')
-        abstract = '```\t' + abstract + '```'
+        abstract = abstract.replace('$', '\$')
+#         abstract = '```\t' + abstract + '```'
 
         text = f'\n url: {url}'\
                f'\n title:    {title}'\
