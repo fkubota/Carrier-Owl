@@ -107,12 +107,15 @@ def notify(results: list, slack_id: str, line_token: str) -> None:
         en_abstract = result.en_abstract
         word = result.words
         score = result.score
+        
+        title = title.replace('$', '\$')
+        abstract = '```\t' + abstract + '```'
 
         text = f'\n url: {url}'\
                f'\n title:    {title}'\
                f'\n English title:    {en_title}'\
                f'\n abstract:'\
-               f'\n \t {abstract}'\
+               f'\n {abstract}'\
                f'\n English abstract:'\
                f'\n \t {en_abstract}'\
                f'\n {star}'
@@ -214,11 +217,11 @@ def main():
 #         for key, val in os.environ.items():
 #             print('{}: {}'.format(key, val))
            
-        slack_id = os.getenv("SLACK_ID_"+channel_name)
-#         slack_id = os.getenv("SLACK_ID") or args.slack_id
+#         slack_id = os.getenv("SLACK_ID_"+channel_name)
+        slack_id = os.getenv("SLACK_ID") or args.slack_id
         line_token = os.getenv("LINE_TOKEN") or args.line_token
         notify(results, slack_id, line_token)
-#         break
+        break
 
 
 if __name__ == "__main__":
