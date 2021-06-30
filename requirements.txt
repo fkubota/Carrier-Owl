@@ -9,3 +9,4 @@ beautifulsoup4==4.9.0
 chromedriver-binary==87.0.4280.88.0
 selenium==3.141.0
 arxiv==0.5.3
+webdriver-manager==3.3.0
