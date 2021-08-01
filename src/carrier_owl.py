@@ -112,10 +112,10 @@ def notify(results: list, slack_id: str, line_token: str) -> None:
         abstract = abstract.replace('$', ' ')
 #         abstract = '```\t' + abstract + '```'
 
-        text = f'\n url: {url}'\
-               f'\n title:    {title}'\
-               f'\n English title:    {en_title}'\
-               f'\n abstract:'\
+        text = f'\n Title:\t{title}'\
+               f'\n English Title:\t{en_title}'\
+               f'\n URL: {url}'\
+               f'\n Abstract:'\
                f'\n {abstract}'\
                f'\n English abstract:'\
                f'\n \t {en_abstract}'\
