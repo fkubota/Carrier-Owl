@@ -69,7 +69,7 @@ def send2app(text: str, slack_id: str, line_token: str) -> None:
     # slack
     if slack_id is not None:
         slack = slackweb.Slack(url=slack_id)
-        slack.notify(text=text, mrkdwn=False)
+        slack.notify(text=text, mrkdwn='false')
 
     # line
     if line_token is not None:
