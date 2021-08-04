@@ -1,11 +1,13 @@
 # arxivの学問領域の指定
-subject: 'cat:cs.*'
+subject: 'cat:cs.CV OR cat:cs.AI OR cat:cs.RO'
 
 # 検索キーワード
 keywords:
-        kaggle: 3
-        resnet: 3
-        anomaly detection: 1
+        SLAM: 5
+        Simultaneous Localization And Mapping: 5
+        Visual Odometry: 5
+        Depth: 3
+        Pose: 3
 
 # 通知の閾値
 score_threshold: 0
