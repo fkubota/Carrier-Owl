@@ -66,6 +66,22 @@ def search_keyword(
     return results
 
 
+def mask(labels, text):
+    def _make_mask(ltx_text):
+        row_ltx = ltx_text.group(0)
+        label = f'(L{len(labels) + 1:04})'
+        labels[label] = row_ltx
+        return label
+
+    text = re.sub(r'\$([^\$]+)\$', _make_mask, text)
+    return text
+
+def unmask(labels, text):
+    for mask, row in labels.items():
+        text = text.replace(mask, row)
+    return text
+
+
 def send2app(text: str, slack_id: str, line_token: str) -> None:
     # slack
     if slack_id is not None:
@@ -110,7 +126,7 @@ def notify(results: list, slack_id: str, line_token: str) -> None:
         score = result.score
         
         title = title.replace('$', ' ')
-        abstract = abstract.replace('$', ' ')
+#         abstract = abstract.replace('$', ' ')
         en_abstract = re.sub(r' *([_\*~]) *', r'\1', en_abstract)
         en_abstract = en_abstract.replace("`", "'")
         abstract = re.sub(r' *([_\*~]) *', r'\1', abstract)
@@ -139,6 +155,10 @@ def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
     # urlencode
     from_text = urllib.parse.quote(from_text, safe='')
     from_text = from_text.replace('%2F', '%5C%2F')
+    
+    # mask latex mathline
+    labels = {}
+    from_text = mask(labels, from_text)
 
     # url作成
     url = 'https://www.deepl.com/translator#' \
@@ -166,6 +186,10 @@ def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
 
     # ブラウザ停止
     driver.quit()
+    
+    # unmask latex mathline
+    to_text = unmask(to_text)
+    
     return to_text
 
 
@@ -223,11 +247,11 @@ def main():
 #         for key, val in os.environ.items():
 #             print('{}: {}'.format(key, val))
            
-        slack_id = os.getenv("SLACK_ID_"+channel_name)
-#         slack_id = os.getenv("SLACK_ID") or args.slack_id
+#         slack_id = os.getenv("SLACK_ID_"+channel_name)
+        slack_id = os.getenv("SLACK_ID") or args.slack_id
         line_token = os.getenv("LINE_TOKEN") or args.line_token
         notify(results, slack_id, line_token)
-#         break
+        break
 
 
 if __name__ == "__main__":
