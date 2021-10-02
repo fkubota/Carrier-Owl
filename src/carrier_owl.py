@@ -188,7 +188,7 @@ def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
     driver.quit()
     
     # unmask latex mathline
-    to_text = unmask(to_text)
+    to_text = unmask(labels, to_text)
     
     return to_text
 
