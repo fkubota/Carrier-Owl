@@ -2,6 +2,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import os
+import re
 import time
 import yaml
 import datetime
@@ -110,6 +111,8 @@ def notify(results: list, slack_id: str, line_token: str) -> None:
         
         title = title.replace('$', ' ')
         abstract = abstract.replace('$', ' ')
+        en_abstract = re.sub(r' *([_\*~]) *', r'\1', en_abstract)
+        en_abstract = en_abstract.replace("`", "'")
 #         abstract = '```\t' + abstract + '```'
 
         text = f'\n Title:\t{title}'\
