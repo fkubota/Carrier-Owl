@@ -193,6 +193,7 @@ def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
     
     # unmask latex mathline
     print(to_text)
+    to_text = to_text.replace('（', '(').replace('）', ')')  # to prevent from change label by deepL
     to_text = unmask(labels, to_text)
     print(to_text)
 
