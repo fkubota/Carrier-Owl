@@ -158,7 +158,10 @@ def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
     
     # mask latex mathline
     labels = {}
+    print(from_text)
     from_text = mask(labels, from_text)
+    print(labels)
+    print(from_text)
 
     # url作成
     url = 'https://www.deepl.com/translator#' \
@@ -188,8 +191,10 @@ def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
     driver.quit()
     
     # unmask latex mathline
+    print(to_text)
     to_text = unmask(labels, to_text)
-    
+    print(to_text)
+
     return to_text
 
 
