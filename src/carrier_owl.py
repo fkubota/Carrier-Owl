@@ -113,6 +113,8 @@ def notify(results: list, slack_id: str, line_token: str) -> None:
         abstract = abstract.replace('$', ' ')
         en_abstract = re.sub(r' *([_\*~]) *', r'\1', en_abstract)
         en_abstract = en_abstract.replace("`", "'")
+        abstract = re.sub(r' *([_\*~]) *', r'\1', abstract)
+        abstract = abstract.replace("`", "'")
 #         abstract = '```\t' + abstract + '```'
 
         text = f'\n Title:\t{title}'\
