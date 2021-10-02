@@ -220,9 +220,9 @@ def main():
     channels = config['channels']
     score_threshold = float(config['score_threshold'])
     
-    today = datetime.datetime.today()
-    deadline = today - datetime.timedelta(days=1)
-    previous_deadline = today - datetime.timedelta(days=2)
+    today = datetime.datetime.today() 
+    deadline = today - datetime.timedelta(days=1) - datetime.timedelta(days=2)
+    previous_deadline = today - datetime.timedelta(days=2) - datetime.timedelta(days=2)
     if today.weekday()==0:  # announce data is Monday
         deadline = deadline - datetime.timedelta(days=2)
         previous_deadline = previous_deadline - datetime.timedelta(days=2)
