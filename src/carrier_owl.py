@@ -204,6 +204,7 @@ def get_text_from_page_source(html: str) -> str:
     soup = BeautifulSoup(html, features='lxml')
     target_elem = soup.find(class_="lmt__translations_as_text__text_btn")
     text = target_elem.text
+    text = ' '.join(text.split())
     return text
 
 
