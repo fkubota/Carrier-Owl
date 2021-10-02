@@ -126,7 +126,7 @@ def notify(results: list, slack_id: str, line_token: str) -> None:
         score = result.score
         
         title = title.replace('$', ' ')
-#         abstract = abstract.replace('$', ' ')
+        abstract = abstract.replace('$', ' ')
         en_abstract = re.sub(r' *([_\*~]) *', r'\1', en_abstract)
         en_abstract = en_abstract.replace("`", "'")
         abstract = re.sub(r' *([_\*~]) *', r'\1', abstract)
@@ -225,8 +225,8 @@ def main():
     score_threshold = float(config['score_threshold'])
     
     today = datetime.datetime.today() 
-    deadline = today - datetime.timedelta(days=1) - datetime.timedelta(days=2)
-    previous_deadline = today - datetime.timedelta(days=2) - datetime.timedelta(days=2)
+    deadline = today - datetime.timedelta(days=1)
+    previous_deadline = today - datetime.timedelta(days=2)
     if today.weekday()==0:  # announce data is Monday
         deadline = deadline - datetime.timedelta(days=2)
         previous_deadline = previous_deadline - datetime.timedelta(days=2)
@@ -251,8 +251,8 @@ def main():
 #         for key, val in os.environ.items():
 #             print('{}: {}'.format(key, val))
            
-#         slack_id = os.getenv("SLACK_ID_"+channel_name)
-        slack_id = os.getenv("SLACK_ID") or args.slack_id
+        slack_id = os.getenv("SLACK_ID_"+channel_name)
+#         slack_id = os.getenv("SLACK_ID") or args.slack_id
         line_token = os.getenv("LINE_TOKEN") or args.line_token
         notify(results, slack_id, line_token)
         break
