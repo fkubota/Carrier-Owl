@@ -68,17 +68,17 @@ def search_keyword(
 
 def mask(labels, text):
     def _make_mask(ltx_text):
-        row_ltx = ltx_text.group(0)
+        raw_ltx = ltx_text.group(0)
         label = f'(L{len(labels) + 1:04})'
-        labels[label] = row_ltx
+        labels[label] = raw_ltx
         return label
 
     text = re.sub(r'\$([^\$]+)\$', _make_mask, text)
     return text
 
 def unmask(labels, text):
-    for mask, row in labels.items():
-        text = text.replace(mask, row)
+    for mask, raw in labels.items():
+        text = text.replace(mask, raw)
     return text
 
 
@@ -154,10 +154,8 @@ def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
     
     # mask latex mathline
     labels = {}
-    print(from_text)
+    print(repr(from_text))
     from_text = mask(labels, from_text)
-    print(labels)
-    print(from_text)
 
     # urlencode
     from_text = urllib.parse.quote(from_text, safe='')
@@ -192,10 +190,8 @@ def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
     driver.quit()
     
     # unmask latex mathline
-    print(to_text)
     to_text = to_text.replace('（', '(').replace('）', ')')  # to prevent from change label by deepL
     to_text = unmask(labels, to_text)
-    print(to_text)
 
     return to_text
 
