@@ -1,28 +1,32 @@
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-import os
-import time
-import yaml
-import datetime
-import slackweb
 import argparse
+import datetime
+import os
 import textwrap
-from bs4 import BeautifulSoup
-import warnings
+import time
 import urllib.parse
+import warnings
 from dataclasses import dataclass
+from string import Template
+
 import arxiv
 import requests
+import slackweb
+import yaml
+from bs4 import BeautifulSoup
+from feedparser import FeedParserDict
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
+
 # setting
 warnings.filterwarnings('ignore')
 
 
 @dataclass
 class Result:
-    url: str
-    title: str
-    abstract: str
+    article: FeedParserDict
+    title_trans: str
+    summary_trans: str
     words: list
     score: float = 0.0
 
@@ -41,23 +45,21 @@ def calc_score(abst: str, keywords: dict) -> (float, list):
 
 def search_keyword(
         articles: list, keywords: dict, score_threshold: float
-        ) -> list:
+) -> list:
     results = []
 
     for article in articles:
-        url = article['arxiv_url']
-        title = article['title']
         abstract = article['summary']
         score, hit_keywords = calc_score(abstract, keywords)
         if (score != 0) and (score >= score_threshold):
-            title_trans = get_translated_text('ja', 'en', title)
-            abstract = abstract.replace('\n', '')
-            abstract_trans = get_translated_text('ja', 'en', abstract)
-            # abstract_trans = textwrap.wrap(abstract_trans, 40)  # 40行で改行
-            # abstract_trans = '\n'.join(abstract_trans)
+            title_trans = get_translated_text(
+                'ja', 'en', article['title'].replace('\n', ' '))
+            summary_trans = get_translated_text(
+                'ja', 'en', article['summary'].replace('\n', ' '))
+            # summary_trans = textwrap.wrap(summary_trans, 40)  # 40行で改行
+            # summary_trans = '\n'.join(summary_trans)
             result = Result(
-                    url=url, title=title_trans, abstract=abstract_trans,
-                    score=score, words=hit_keywords)
+                article=article, title_trans=title_trans, summary_trans=summary_trans, words=hit_keywords, score=score)
             results.append(result)
     return results
 
@@ -76,7 +78,16 @@ def send2app(text: str, slack_id: str, line_token: str) -> None:
         requests.post(line_notify_api, headers=headers, data=data)
 
 
-def notify(results: list, slack_id: str, line_token: str) -> None:
+def nice_str(obj) -> str:
+    if isinstance(obj, list):
+        if all(type(elem) is str for elem in obj):
+            return ', '.join(obj)
+    if type(obj) is str:
+        return obj.replace('\n', ' ')
+    return str(obj)
+
+
+def notify(results: list, template: str, slack_id: str, line_token: str) -> None:
     # 通知
     star = '*'*80
     today = datetime.date.today()
@@ -85,19 +96,15 @@ def notify(results: list, slack_id: str, line_token: str) -> None:
     send2app(text, slack_id, line_token)
     # descending
     for result in sorted(results, reverse=True, key=lambda x: x.score):
-        url = result.url
-        title = result.title
-        abstract = result.abstract
-        word = result.words
+        article = result.article
+        article_str = {key: nice_str(article[key]) for key in article.keys()}
+        title_trans = result.title_trans
+        summary_trans = result.summary_trans
+        words = nice_str(result.words)
         score = result.score
 
-        text = f'\n score: `{score}`'\
-               f'\n hit keywords: `{word}`'\
-               f'\n url: {url}'\
-               f'\n title:    {title}'\
-               f'\n abstract:'\
-               f'\n \t {abstract}'\
-               f'\n {star}'
+        text = Template(template).substitute(
+            article_str, words=words, score=score, title_trans=title_trans, summary_trans=summary_trans, star=star)
 
         send2app(text, slack_id, line_token)
 
@@ -166,6 +173,14 @@ def main():
     subject = config['subject']
     keywords = config['keywords']
     score_threshold = float(config['score_threshold'])
+    default_template = '\n score: `${score}`'\
+                       '\n hit keywords: `${words}`'\
+                       '\n url: ${arxiv_url}'\
+                       '\n title:    ${title_trans}'\
+                       '\n abstract:'\
+                       '\n \t ${summary_trans}'\
+                       '\n ${star}'
+    template = config.get('template', default_template)
 
     day_before_yesterday = datetime.datetime.today() - datetime.timedelta(days=2)
     day_before_yesterday_str = day_before_yesterday.strftime('%Y%m%d')
@@ -181,7 +196,7 @@ def main():
 
     slack_id = os.getenv("SLACK_ID") or args.slack_id
     line_token = os.getenv("LINE_TOKEN") or args.line_token
-    notify(results, slack_id, line_token)
+    notify(results, template, slack_id, line_token)
 
 
 if __name__ == "__main__":
