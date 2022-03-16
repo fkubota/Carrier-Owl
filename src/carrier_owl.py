@@ -1,21 +1,23 @@
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-import os
-import time
-import yaml
-import datetime
-import slackweb
 import argparse
+import datetime
+import os
 import textwrap
-from bs4 import BeautifulSoup
-import warnings
+import time
 import urllib.parse
+import warnings
 from dataclasses import dataclass
+from string import Template
+
 import arxiv
 import requests
+import slackweb
+import yaml
+from bs4 import BeautifulSoup
 from feedparser import FeedParserDict
-from string import Template
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
+
 # setting
 warnings.filterwarnings('ignore')
 
