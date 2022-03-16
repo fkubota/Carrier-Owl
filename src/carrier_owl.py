@@ -15,6 +15,7 @@ from dataclasses import dataclass
 import arxiv
 import requests
 from feedparser import FeedParserDict
+from string import Template
 # setting
 warnings.filterwarnings('ignore')
 
@@ -65,6 +66,11 @@ def send2app(text: str, slack_id: str, line_token: str) -> None:
         data = {'message': f'message: {text}'}
         requests.post(line_notify_api, headers=headers, data=data)
 
+def nice_str(obj) -> str:
+    if isinstance(obj, list):
+        if all(type(elem) is str for elem in obj):
+            return ', '.join(obj)
+    return str(obj)
 
 def notify(results: list, template: str, slack_id: str, line_token: str) -> None:
     # 通知
@@ -75,25 +81,17 @@ def notify(results: list, template: str, slack_id: str, line_token: str) -> None
     send2app(text, slack_id, line_token)
     # descending
     for result in sorted(results, reverse=True, key=lambda x: x.score):
-        url = result.url
-        title = result.title
-        abstract = result.abstract
+        article = result.article
         word = result.words
         score = result.score
 
-        title_trans = get_translated_text('ja', 'en', title)
-        abstract = abstract.replace('\n', '')
-        abstract_trans = get_translated_text('ja', 'en', abstract)
-        # abstract_trans = textwrap.wrap(abstract_trans, 40)  # 40行で改行
-        # abstract_trans = '\n'.join(abstract_trans)
+        title_trans = get_translated_text('ja', 'en', article['title'])
+        summary_trans = get_translated_text('ja', 'en', article['summary'].replace('\n', ''))
+        # summary_trans = textwrap.wrap(summary_trans, 40)  # 40行で改行
+        # summary_trans = '\n'.join(summary_trans)
+        result_str = {key: nice_str(article[key]) for key in article.keys()}
 
-        text = f'\n score: `{score}`'\
-               f'\n hit keywords: `{word}`'\
-               f'\n url: {url}'\
-               f'\n title:    {title}'\
-               f'\n abstract:'\
-               f'\n \t {abstract}'\
-               f'\n {star}'
+        text = Template(template).substitute(result_str, title_trans=title_trans, summary_trans=summary_trans)
 
         send2app(text, slack_id, line_token)
 
