@@ -23,6 +23,8 @@ warnings.filterwarnings('ignore')
 @dataclass
 class Result:
     article: FeedParserDict
+    title_trans: str
+    summary_trans: str
     words: list
     score: float = 0.0
 
@@ -48,7 +50,12 @@ def search_keyword(
         abstract = article['summary']
         score, hit_keywords = calc_score(abstract, keywords)
         if (score != 0) and (score >= score_threshold):
-            result = Result(article=article, words=hit_keywords, score=score)
+            title_trans = get_translated_text('ja', 'en', article['title'].replace('\n', ' '))
+            summary_trans = get_translated_text('ja', 'en', article['summary'].replace('\n', ' '))
+            # summary_trans = textwrap.wrap(summary_trans, 40)  # 40行で改行
+            # summary_trans = '\n'.join(summary_trans)
+            result = Result(
+                article=article, title_trans=title_trans, summary_trans=summary_trans, words=hit_keywords, score=score)
             results.append(result)
     return results
 
@@ -84,14 +91,11 @@ def notify(results: list, template: str, slack_id: str, line_token: str) -> None
     # descending
     for result in sorted(results, reverse=True, key=lambda x: x.score):
         article = result.article
+        article_str = {key: nice_str(article[key]) for key in article.keys()}
+        title_trans = result.title_trans
+        summary_trans = result.summary_trans
         words = nice_str(result.words)
         score = result.score
-        article_str = {key: nice_str(article[key]) for key in article.keys()}
-
-        title_trans = get_translated_text('ja', 'en', article_str['title'])
-        summary_trans = get_translated_text('ja', 'en', article_str['summary'])
-        # summary_trans = textwrap.wrap(summary_trans, 40)  # 40行で改行
-        # summary_trans = '\n'.join(summary_trans)
 
         text = Template(template).substitute(
             article_str, words=words, score=score, title_trans=title_trans, summary_trans=summary_trans, star=star)
