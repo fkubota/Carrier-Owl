@@ -82,11 +82,11 @@ def notify(results: list, template: str, slack_id: str, line_token: str) -> None
     # descending
     for result in sorted(results, reverse=True, key=lambda x: x.score):
         article = result.article
-        words = result.words
+        words = nice_str(result.words)
         score = result.score
 
-        title_trans = get_translated_text('ja', 'en', article['title'])
-        summary_trans = get_translated_text('ja', 'en', article['summary'].replace('\n', ''))
+        title_trans = get_translated_text('ja', 'en', article['title'].replace('\n', ' '))
+        summary_trans = get_translated_text('ja', 'en', article['summary'].replace('\n', ' '))
         # summary_trans = textwrap.wrap(summary_trans, 40)  # 40行で改行
         # summary_trans = '\n'.join(summary_trans)
         result_str = {key: nice_str(article[key]) for key in article.keys()}
