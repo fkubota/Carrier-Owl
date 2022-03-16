@@ -82,7 +82,7 @@ def notify(results: list, template: str, slack_id: str, line_token: str) -> None
     # descending
     for result in sorted(results, reverse=True, key=lambda x: x.score):
         article = result.article
-        word = result.words
+        words = result.words
         score = result.score
 
         title_trans = get_translated_text('ja', 'en', article['title'])
@@ -91,7 +91,8 @@ def notify(results: list, template: str, slack_id: str, line_token: str) -> None
         # summary_trans = '\n'.join(summary_trans)
         result_str = {key: nice_str(article[key]) for key in article.keys()}
 
-        text = Template(template).substitute(result_str, title_trans=title_trans, summary_trans=summary_trans)
+        text = Template(template).substitute(
+            result_str, words=words, score=score, title_trans=title_trans, summary_trans=summary_trans, star=star)
 
         send2app(text, slack_id, line_token)
 
@@ -164,10 +165,10 @@ def main():
     if template is None:
         template = '\n score: `${score}`'\
                    '\n hit keywords: `${words}`'\
-                   '\n url: ${url}'\
-                   '\n title:    ${title}'\
+                   '\n url: ${arxiv_url}'\
+                   '\n title:    ${title_trans}'\
                    '\n abstract:'\
-                   '\n \t ${abstract_trans}'\
+                   '\n \t ${summary_trans}'\
                    '\n ${star}'
 
     day_before_yesterday = datetime.datetime.today() - datetime.timedelta(days=2)
