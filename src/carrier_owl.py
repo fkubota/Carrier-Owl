@@ -1,4 +1,3 @@
-from re import template
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -77,7 +76,7 @@ def send2app(text: str, slack_id: str, line_token: str) -> None:
         requests.post(line_notify_api, headers=headers, data=data)
 
 
-def notify(results: list, template: str, slack_id: str, line_token: str) -> None:
+def notify(results: list, slack_id: str, line_token: str) -> None:
     # 通知
     star = '*'*80
     today = datetime.date.today()
@@ -167,15 +166,6 @@ def main():
     subject = config['subject']
     keywords = config['keywords']
     score_threshold = float(config['score_threshold'])
-    template = config['template']
-    if template is None:
-        template = '\n score: `${score}`'\
-                   '\n hit keywords: `${words}`'\
-                   '\n url: ${url}'\
-                   '\n title:    ${title}'\
-                   '\n abstract:'\
-                   '\n \t ${abstract_trans}'\
-                   '\n ${star}'
 
     day_before_yesterday = datetime.datetime.today() - datetime.timedelta(days=2)
     day_before_yesterday_str = day_before_yesterday.strftime('%Y%m%d')
@@ -191,7 +181,7 @@ def main():
 
     slack_id = os.getenv("SLACK_ID") or args.slack_id
     line_token = os.getenv("LINE_TOKEN") or args.line_token
-    notify(results, template, slack_id, line_token)
+    notify(results, slack_id, line_token)
 
 
 if __name__ == "__main__":
