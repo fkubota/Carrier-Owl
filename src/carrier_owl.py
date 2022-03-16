@@ -14,15 +14,14 @@ import urllib.parse
 from dataclasses import dataclass
 import arxiv
 import requests
+from feedparser import FeedParserDict
 # setting
 warnings.filterwarnings('ignore')
 
 
 @dataclass
 class Result:
-    url: str
-    title: str
-    abstract: str
+    article: FeedParserDict
     words: list
     score: float = 0.0
 
@@ -45,19 +44,10 @@ def search_keyword(
     results = []
 
     for article in articles:
-        url = article['arxiv_url']
-        title = article['title']
         abstract = article['summary']
         score, hit_keywords = calc_score(abstract, keywords)
         if (score != 0) and (score >= score_threshold):
-            title_trans = get_translated_text('ja', 'en', title)
-            abstract = abstract.replace('\n', '')
-            abstract_trans = get_translated_text('ja', 'en', abstract)
-            # abstract_trans = textwrap.wrap(abstract_trans, 40)  # 40行で改行
-            # abstract_trans = '\n'.join(abstract_trans)
-            result = Result(
-                    url=url, title=title_trans, abstract=abstract_trans,
-                    score=score, words=hit_keywords)
+            result = Result(article=article, words=hit_keywords, score=score)
             results.append(result)
     return results
 
@@ -90,6 +80,12 @@ def notify(results: list, template: str, slack_id: str, line_token: str) -> None
         abstract = result.abstract
         word = result.words
         score = result.score
+
+        title_trans = get_translated_text('ja', 'en', title)
+        abstract = abstract.replace('\n', '')
+        abstract_trans = get_translated_text('ja', 'en', abstract)
+        # abstract_trans = textwrap.wrap(abstract_trans, 40)  # 40行で改行
+        # abstract_trans = '\n'.join(abstract_trans)
 
         text = f'\n score: `{score}`'\
                f'\n hit keywords: `{word}`'\
