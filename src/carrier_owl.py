@@ -161,15 +161,14 @@ def main():
     subject = config['subject']
     keywords = config['keywords']
     score_threshold = float(config['score_threshold'])
-    template = config['template']
-    if template is None:
-        template = '\n score: `${score}`'\
-                   '\n hit keywords: `${words}`'\
-                   '\n url: ${arxiv_url}'\
-                   '\n title:    ${title_trans}'\
-                   '\n abstract:'\
-                   '\n \t ${summary_trans}'\
-                   '\n ${star}'
+    default_template = '\n score: `${score}`'\
+                       '\n hit keywords: `${words}`'\
+                       '\n url: ${arxiv_url}'\
+                       '\n title:    ${title_trans}'\
+                       '\n abstract:'\
+                       '\n \t ${summary_trans}'\
+                       '\n ${star}'
+    template = config.get('template', default_template)
 
     day_before_yesterday = datetime.datetime.today() - datetime.timedelta(days=2)
     day_before_yesterday_str = day_before_yesterday.strftime('%Y%m%d')
