@@ -43,15 +43,17 @@ def calc_score(abst: str, keywords: dict) -> (float, list):
 
 def search_keyword(
         articles: list, keywords: dict, score_threshold: float
-        ) -> list:
+) -> list:
     results = []
 
     for article in articles:
         abstract = article['summary']
         score, hit_keywords = calc_score(abstract, keywords)
         if (score != 0) and (score >= score_threshold):
-            title_trans = get_translated_text('ja', 'en', article['title'].replace('\n', ' '))
-            summary_trans = get_translated_text('ja', 'en', article['summary'].replace('\n', ' '))
+            title_trans = get_translated_text(
+                'ja', 'en', article['title'].replace('\n', ' '))
+            summary_trans = get_translated_text(
+                'ja', 'en', article['summary'].replace('\n', ' '))
             # summary_trans = textwrap.wrap(summary_trans, 40)  # 40行で改行
             # summary_trans = '\n'.join(summary_trans)
             result = Result(
@@ -73,6 +75,7 @@ def send2app(text: str, slack_id: str, line_token: str) -> None:
         data = {'message': f'message: {text}'}
         requests.post(line_notify_api, headers=headers, data=data)
 
+
 def nice_str(obj) -> str:
     if isinstance(obj, list):
         if all(type(elem) is str for elem in obj):
@@ -80,6 +83,7 @@ def nice_str(obj) -> str:
     if type(obj) is str:
         return obj.replace('\n', ' ')
     return str(obj)
+
 
 def notify(results: list, template: str, slack_id: str, line_token: str) -> None:
     # 通知
