@@ -70,6 +70,8 @@ def nice_str(obj) -> str:
     if isinstance(obj, list):
         if all(type(elem) is str for elem in obj):
             return ', '.join(obj)
+    if type(obj) is str:
+        return obj.replace('\n', ' ')
     return str(obj)
 
 def notify(results: list, template: str, slack_id: str, line_token: str) -> None:
@@ -84,15 +86,15 @@ def notify(results: list, template: str, slack_id: str, line_token: str) -> None
         article = result.article
         words = nice_str(result.words)
         score = result.score
+        article_str = {key: nice_str(article[key]) for key in article.keys()}
 
-        title_trans = get_translated_text('ja', 'en', article['title'].replace('\n', ' '))
-        summary_trans = get_translated_text('ja', 'en', article['summary'].replace('\n', ' '))
+        title_trans = get_translated_text('ja', 'en', article_str['title'])
+        summary_trans = get_translated_text('ja', 'en', article_str['summary'])
         # summary_trans = textwrap.wrap(summary_trans, 40)  # 40行で改行
         # summary_trans = '\n'.join(summary_trans)
-        result_str = {key: nice_str(article[key]) for key in article.keys()}
 
         text = Template(template).substitute(
-            result_str, words=words, score=score, title_trans=title_trans, summary_trans=summary_trans, star=star)
+            article_str, words=words, score=score, title_trans=title_trans, summary_trans=summary_trans, star=star)
 
         send2app(text, slack_id, line_token)
 
