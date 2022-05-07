@@ -121,7 +121,8 @@ def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
     options.add_argument('--headless')
 
     # ブラウザーを起動
-    print(url)
+    # print('xxxxx')
+    # print(url)
     driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
     driver.get(url)
     driver.implicitly_wait(10)  # 見つからないときは、10秒まで待つ
@@ -130,6 +131,10 @@ def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
         # 指定時間待つ
         time.sleep(sleep_time)
         html = driver.page_source
+
+        print('xxxxx')
+        print(html)
+        print(1/0)
         to_text = get_text_from_page_source(html)
 
         if to_text:
@@ -150,7 +155,6 @@ def get_text_from_page_source(html: str) -> str:
     # print('xxxxx')
     # print(target_elem)
     text = target_elem.text
-    print(1/0)
     return text
 
 
