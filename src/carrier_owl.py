@@ -189,8 +189,6 @@ def main():
                            max_results=1000,
                            sort_by='submittedDate',
                            iterative=False)
-    print('xxxxx')
-    print(articles[0])
     results = search_keyword(articles, keywords, score_threshold)
 
     slack_id = os.getenv("SLACK_ID") or args.slack_id
