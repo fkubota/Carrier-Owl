@@ -1,6 +1,6 @@
-from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.firefox import GeckoDriverManager
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.firefox.options import Options
 import os
 import time
 import yaml
@@ -43,22 +43,32 @@ def search_keyword(
         articles: list, keywords: dict, score_threshold: float
         ) -> list:
     results = []
+    
+    # ヘッドレスモードでブラウザを起動
+    options = Options()
+    options.add_argument('--headless')
 
+    # ブラウザーを起動
+    driver = webdriver.Firefox(executable_path=GeckoDriverManager().install(), options=options)
+    
     for article in articles:
         url = article['arxiv_url']
         title = article['title']
         abstract = article['summary']
         score, hit_keywords = calc_score(abstract, keywords)
         if (score != 0) and (score >= score_threshold):
-            title_trans = get_translated_text('ja', 'en', title)
+            title_trans = get_translated_text('ja', 'en', title, driver)
             abstract = abstract.replace('\n', '')
-            abstract_trans = get_translated_text('ja', 'en', abstract)
+            abstract_trans = get_translated_text('ja', 'en', abstract, driver)
             # abstract_trans = textwrap.wrap(abstract_trans, 40)  # 40行で改行
             # abstract_trans = '\n'.join(abstract_trans)
             result = Result(
                     url=url, title=title_trans, abstract=abstract_trans,
                     score=score, words=hit_keywords)
             results.append(result)
+    
+    # ブラウザ停止
+    driver.quit()
     return results
 
 
@@ -102,7 +112,7 @@ def notify(results: list, slack_id: str, line_token: str) -> None:
         send2app(text, slack_id, line_token)
 
 
-def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
+def get_translated_text(from_lang: str, to_lang: str, from_text: str, driver) -> str:
     '''
     https://qiita.com/fujino-fpu/items/e94d4ff9e7a5784b2987
     '''
@@ -116,12 +126,6 @@ def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
     url = 'https://www.deepl.com/translator#' \
         + from_lang + '/' + to_lang + '/' + from_text
 
-    # ヘッドレスモードでブラウザを起動
-    options = Options()
-    options.add_argument('--headless')
-
-    # ブラウザーを起動
-    driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
     driver.get(url)
     driver.implicitly_wait(10)  # 見つからないときは、10秒まで待つ
 
@@ -133,9 +137,6 @@ def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
 
         if to_text:
             break
-
-    # ブラウザ停止
-    driver.quit()
     return to_text
 
 
