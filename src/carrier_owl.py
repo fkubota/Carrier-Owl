@@ -121,6 +121,7 @@ def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
     options.add_argument('--headless')
 
     # ブラウザーを起動
+    print(url)
     driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
     driver.get(url)
     driver.implicitly_wait(10)  # 見つからないときは、10秒まで待つ
@@ -140,15 +141,16 @@ def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
 
 
 def get_text_from_page_source(html: str) -> str:
-    print('xxxxx')
-    print(html)
+    # print('xxxxx')
+    # print(html)
     soup = BeautifulSoup(html, features='lxml')
-    print('xxxxx')
-    print(soup)
+    # print('xxxxx')
+    # print(soup)
     target_elem = soup.find(class_="lmt__translations_as_text__text_btn")
-    print('xxxxx')
-    print(target_elem)
+    # print('xxxxx')
+    # print(target_elem)
     text = target_elem.text
+    print(1/0)
     return text
 
 
