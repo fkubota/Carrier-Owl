@@ -140,8 +140,14 @@ def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
 
 
 def get_text_from_page_source(html: str) -> str:
+    print('-----')
+    print(html)
     soup = BeautifulSoup(html, features='lxml')
+    print('-----')
+    print(soup)
     target_elem = soup.find(class_="lmt__translations_as_text__text_btn")
+    print('-----')
+    print(target_elem)
     text = target_elem.text
     return text
 
