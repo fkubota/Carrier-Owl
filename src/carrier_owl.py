@@ -168,8 +168,7 @@ def main():
     keywords = config['keywords']
     score_threshold = float(config['score_threshold'])
 
-    # day_before_yesterday = datetime.datetime.today() - datetime.timedelta(days=2)
-    day_before_yesterday = datetime.datetime.today() - datetime.timedelta(days=3)
+    day_before_yesterday = datetime.datetime.today() - datetime.timedelta(days=2)
     day_before_yesterday_str = day_before_yesterday.strftime('%Y%m%d')
     # datetime format YYYYMMDDHHMMSS
     arxiv_query = f'({subject}) AND ' \
