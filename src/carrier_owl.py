@@ -126,9 +126,9 @@ def get_translated_text(from_lang: str, to_lang: str, from_text: str) -> str:
     driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
     driver.get(url)
     driver.implicitly_wait(10)  # 見つからないときは、10秒まで待つ
-    print('xxxxx')
-    print(driver)
-    print(1/0)
+    # print('xxxxx')
+    # print(driver)
+    # print(1/0)
 
     for i in range(30):
         # 指定時間待つ
