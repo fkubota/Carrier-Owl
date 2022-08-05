@@ -52,6 +52,7 @@
 
     - Slackに通知する場合は[こちら](./docs/slack_setup.md)
     - LINEに通知する場合は[こちら](./docs/line_setup.md)
+    - Teamsに通知する場合は[こちら](./docs/teams_setup.md)
 
 
 4. **webhook urlの設定**
@@ -66,7 +67,7 @@
 
         c. `New repository secret` をクリック。
 
-        d. Nameを `SLACK_ID`(または `LINE_TOKEN` ) と入力。Valueを **step2** で取得した`webhook url`(また `line token`)を貼り付けます。
+        d. Nameを `SLACK_ID`(または `LINE_TOKEN`、Teamsで使用する場合は `TEAMS_ID` ) と入力。Valueを **step2** で取得した`webhook url`(また `line token`)を貼り付けます。
 
         <img src='./data/images/07.png' width='1000'>
         
