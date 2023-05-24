@@ -1,4 +1,4 @@
-wheel==0.36.2
+wheel==0.38.1
 slackweb==1.0.5
 requests==2.23.0
 lxml==4.6.2
