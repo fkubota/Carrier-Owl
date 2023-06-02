@@ -3,9 +3,10 @@ subject: 'cat:cs.*'
 
 # 検索キーワード
 keywords:
-        kaggle: 3
-        resnet: 3
-        anomaly detection: 1
-
+        GAN: 3
+        Motion Sharpening: 3
+        Super Resolution: 2
+        optical flow: 1
+    
 # 通知の閾値
 score_threshold: 0
