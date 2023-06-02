@@ -52,10 +52,11 @@
 
     - Slackに通知する場合は[こちら](./docs/slack_setup.md)
     - LINEに通知する場合は[こちら](./docs/line_setup.md)
+    - Discordに通知する場合は[こちら](./docs/discord_setup.md)
 
 
 4. **webhook urlの設定**
-    - step3で取得した `webhook url`(または `line token`) を設定します。
+    - step3で取得した `webhook url`(または `line token`, `discord_webhook`) を設定します。
     - 手順
 
         a. `settings` をクリック。
@@ -66,7 +67,7 @@
 
         c. `New repository secret` をクリック。
 
-        d. Nameを `SLACK_ID`(または `LINE_TOKEN` ) と入力。Valueを **step2** で取得した`webhook url`(また `line token`)を貼り付けます。
+        d. Nameを `SLACK_ID`(または `LINE_TOKEN`, `DISCORD_WEBHOOK` ) と入力。Valueを **step2** で取得した`webhook url`(また `line token`, `ウェブフックURL` )を貼り付けます。
 
         <img src='./data/images/07.png' width='1000'>
         

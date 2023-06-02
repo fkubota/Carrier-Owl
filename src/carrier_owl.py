@@ -15,6 +15,7 @@ import urllib.parse
 from dataclasses import dataclass
 import arxiv
 import requests
+import json
 # setting
 warnings.filterwarnings('ignore')
 
@@ -73,7 +74,7 @@ def search_keyword(
     return results
 
 
-def send2app(text: str, slack_id: str, line_token: str) -> None:
+def send2app(text: str, slack_id: str, line_token: str, discord_webhook: str) -> None:
     # slack
     if slack_id is not None:
         slack = slackweb.Slack(url=slack_id)
@@ -86,14 +87,19 @@ def send2app(text: str, slack_id: str, line_token: str) -> None:
         data = {'message': f'message: {text}'}
         requests.post(line_notify_api, headers=headers, data=data)
 
+    if discord_webhook is not None:
+        webhook_url = discord_webhook
+        main_content = {'content': f'{text}'}
+        headers = {'Content-Type': 'application/json'}
+        requests.post(webhook_url, json.dumps(main_content), headers=headers)
 
-def notify(results: list, slack_id: str, line_token: str) -> None:
+def notify(results: list, slack_id: str, line_token: str, discord_webhook: str) -> None:
     # 通知
     star = '*'*80
     today = datetime.date.today()
     n_articles = len(results)
     text = f'{star}\n \t \t {today}\tnum of articles = {n_articles}\n{star}'
-    send2app(text, slack_id, line_token)
+    send2app(text, slack_id, line_token, discord_webhook)
     # descending
     for result in sorted(results, reverse=True, key=lambda x: x.score):
         url = result.url
@@ -110,7 +116,7 @@ def notify(results: list, slack_id: str, line_token: str) -> None:
                f'\n \t {abstract}'\
                f'\n {star}'
 
-        send2app(text, slack_id, line_token)
+        send2app(text, slack_id, line_token, discord_webhook)
 
 
 def get_translated_text(from_lang: str, to_lang: str, from_text: str, driver) -> str:
@@ -172,6 +178,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--slack_id', default=None)
     parser.add_argument('--line_token', default=None)
+    parser.add_argument('--discord_webhook', default=None)
     args = parser.parse_args()
 
     config = get_config()
@@ -193,7 +200,8 @@ def main():
 
     slack_id = os.getenv("SLACK_ID") or args.slack_id
     line_token = os.getenv("LINE_TOKEN") or args.line_token
-    notify(results, slack_id, line_token)
+    discord_webhook = os.getenv("DISCORD_WEBHOOK") or args.discord_webhook
+    notify(results, slack_id, line_token, discord_webhook)
 
 
 if __name__ == "__main__":
